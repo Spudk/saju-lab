@@ -387,7 +387,8 @@ textarea::placeholder{color:#64748b;}
         <div class="lang-select">
           <label for="lang">Language</label>
           <select id="lang" onchange="setLanguage(this.value)">
-            <option value="ko">한국어</option>
+                        <option value="en">English</option>
+<option value="ko">한국어</option>
             <option value="ja">日本語</option>
             <option value="th">ไทย</option>
             <option value="id">Bahasa Indonesia</option>
@@ -480,7 +481,7 @@ textarea::placeholder{color:#64748b;}
     <div style="margin-top:10px;font-size:0.8rem;color:#94a3b8;">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
         <input type="checkbox" id="aiCreative" style="width:14px;height:14px;">
-        <span>AI Creative 모드 활성화 (조금 더 솔직하고 개인적인 조언 추가)</span>
+        <span id="aiCreativeLabelText">AI Creative 모드 활성화 (조금 더 솔직하고 개인적인 조언 추가)</span>
       </label>
     </div>
 
@@ -573,14 +574,14 @@ const MBTI16 = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','
 
 
 const GOAL_OPTIONS = [
-  {key:"sales", ko:"매출/거래처", icon:"fa-chart-line"},
-  {key:"brand", ko:"브랜딩/마케팅", icon:"fa-bullhorn"},
-  {key:"product", ko:"상품/서비스", icon:"fa-cube"},
-  {key:"people", ko:"인재/조직", icon:"fa-people-group"},
-  {key:"money", ko:"투자/자산", icon:"fa-coins"},
-  {key:"system", ko:"시스템/자동화", icon:"fa-gears"},
-  {key:"health", ko:"건강/습관", icon:"fa-heart-pulse"},
-  {key:"study", ko:"학습/자격", icon:"fa-graduation-cap"}
+  {key:"sales", label:{ko:"매출/거래처",ja:"売上/取引先",th:"ยอดขาย/ลูกค้า",id:"Penjualan/klien",en:"Sales/clients"}, icon:"fa-chart-line"},
+  {key:"brand", label:{ko:"브랜딩/마케팅",ja:"ブランディング/マーケ",th:"แบรนด์/การตลาด",id:"Brand/marketing",en:"Brand/marketing"}, icon:"fa-bullhorn"},
+  {key:"product", label:{ko:"상품/서비스",ja:"商品/サービス",th:"สินค้า/บริการ",id:"Produk/layanan",en:"Product/service"}, icon:"fa-cube"},
+  {key:"people", label:{ko:"인재/조직",ja:"人材/組織",th:"คน/ทีม",id:"Orang/tim",en:"People/team"}, icon:"fa-people-group"},
+  {key:"money", label:{ko:"투자/자산",ja:"投資/資産",th:"ลงทุน/ทรัพย์สิน",id:"Investasi/aset",en:"Investment/assets"}, icon:"fa-coins"},
+  {key:"system", label:{ko:"시스템/자동화",ja:"仕組み/自動化",th:"ระบบ/อัตโนมัติ",id:"Sistem/otomasi",en:"System/automation"}, icon:"fa-gears"},
+  {key:"health", label:{ko:"건강/습관",ja:"健康/習慣",th:"สุขภาพ/วินัย",id:"Kesehatan/kebiasaan",en:"Health/habits"}, icon:"fa-heart-pulse"},
+  {key:"study", label:{ko:"학습/자격",ja:"学習/資格",th:"เรียน/ใบรับรอง",id:"Belajar/sertifikasi",en:"Study/certification"}, icon:"fa-graduation-cap"}
 ];
 
 function initGoalChips(){
@@ -593,7 +594,8 @@ function initGoalChips(){
   GOAL_OPTIONS.forEach(opt=>{
     const chip=document.createElement("div");
     chip.className="chip"+(selected.has(opt.key)?" selected":"");
-    chip.innerHTML = `<i class="fa-solid ${opt.icon}" style="margin-right:6px;opacity:.85;"></i>${opt.ko}`;
+    const lab = (opt.label && (opt.label[currentLang]||opt.label.ko)) || opt.ko || opt.key;
+    chip.innerHTML = `<i class="fa-solid ${opt.icon}" style="margin-right:6px;opacity:.85;"></i>${lab}`;
     chip.onclick=()=>{
       if(selected.has(opt.key)) selected.delete(opt.key); else selected.add(opt.key);
       hidden.value = Array.from(selected).join(",");
@@ -608,12 +610,57 @@ function setRiskLabel(){
   const label=document.getElementById("riskLabel");
   if(!el||!label) return;
   const v=parseInt(el.value||"50",10);
-  let txt="중립: 공격도, 방어도 아닌 ‘균형형’";
-  if(v<=25) txt="보수형: 안전장치·현금흐름 우선, 큰 베팅은 늦게";
-  else if(v<=45) txt="신중형: 검증→확장 순서, 계약·리스크 관리 강점";
-  else if(v<=65) txt="균형형: 실험과 방어를 같이, 월별 체크가 핵심";
-  else if(v<=85) txt="공격형: 기회 포착 빠름(대신 오버페이스 주의)";
-  else txt="초공격형: ‘한 번에 크게’ 성향(레버리지·건강·관계 리스크 조심)";
+
+  const map = {
+    ko:{
+      base:"중립: 공격도, 방어도 아닌 ‘균형형’",
+      a:"보수형: 안전장치·현금흐름 우선, 큰 베팅은 늦게",
+      b:"신중형: 검증→확장 순서, 계약·리스크 관리 강점",
+      c:"균형형: 실험과 방어를 같이, 월별 체크가 핵심",
+      d:"공격형: 기회 포착 빠름(대신 오버페이스 주의)",
+      e:"초공격형: ‘한 번에 크게’ 성향(레버리지·건강·관계 리스크 조심)"
+    },
+    ja:{
+      base:"中立：攻めも守りもバランス型",
+      a:"保守型：安全装置とキャッシュフロー優先",
+      b:"慎重型：検証→拡大の順、契約/リスク管理が得意",
+      c:"バランス型：実験と防御を両立、月次チェックが鍵",
+      d:"攻撃型：チャンス察知が速い（オーバーペース注意）",
+      e:"超攻撃型：一気に大きく（レバレッジ/健康/関係リスク注意）"
+    },
+    th:{
+      base:"สมดุล: ไม่บุกไม่รับมากเกินไป",
+      a:"สายปลอดภัย: เน้นกันความเสี่ยงและกระแสเงินสด",
+      b:"สายรอบคอบ: ทดลองก่อนแล้วค่อยขยาย",
+      c:"สมดุล: ทำทั้งทดลองและป้องกัน พร้อมเช็กทุกเดือน",
+      d:"สายบุก: จับโอกาสไว (ระวังเร่งเกินไป)",
+      e:"บุกสุด: ชอบทุ่มครั้งใหญ่ (ระวังหนี้/สุขภาพ/ความสัมพันธ์)"
+    },
+    id:{
+      base:"Netral: seimbang antara agresif dan defensif",
+      a:"Konservatif: utamakan pengaman & arus kas",
+      b:"Hati-hati: validasi→ekspansi, kuat di kontrak & risiko",
+      c:"Seimbang: eksperimen + perlindungan, kunci ada di cek bulanan",
+      d:"Agresif: cepat menangkap peluang (waspada over-pace)",
+      e:"Sangat agresif: sekali gas besar (waspada leverage/kesehatan/relasi)"
+    },
+    en:{
+      base:"Neutral: balanced between offense and defense",
+      a:"Conservative: prioritize safeguards & cash flow",
+      b:"Cautious: validate → expand, strong at contracts & risk control",
+      c:"Balanced: experiment and protect in parallel, monthly check is key",
+      d:"Aggressive: fast at spotting opportunities (watch over-pace)",
+      e:"Ultra-aggressive: big bets (watch leverage/health/relationships)"
+    }
+  }[currentLang] || map.ko;
+
+  let txt = map.base;
+  if(v<=25) txt=map.a;
+  else if(v<=45) txt=map.b;
+  else if(v<=65) txt=map.c;
+  else if(v<=85) txt=map.d;
+  else txt=map.e;
+
   label.textContent = txt;
 }
 
@@ -641,6 +688,11 @@ const HOUR_LABELS = {
     "23:30–01:29","01:30–03:29","03:30–05:29","05:30–07:29",
     "07:30–09:29","09:30–11:29","11:30–13:29","13:30–15:29",
     "15:30–17:29","17:30–19:29","19:30–21:29","21:30–23:29"
+  ],
+  en:[
+    "23:30–01:29","01:30–03:29","03:30–05:29","05:30–07:29",
+    "07:30–09:29","09:30–11:29","11:30–13:29","13:30–15:29",
+    "15:30–17:29","17:30–19:29","19:30–21:29","21:30–23:29"
   ]
 };
 
@@ -656,7 +708,8 @@ const TEXTS = {
     dayDefault:"일",
     hourUnknown:"시간 모름 (정확도↓)",
     mbtiLabel:"성향 16유형 (MBTI 기반)",
-    btnStart:"정밀 분석 시작",
+        aiCreativeLabel:"AI Creative 모드 활성화 (조금 더 솔직하고 개인적인 조언 추가)",
+btnStart:"정밀 분석 시작",
     btnRetry:"다른 사람 다시 분석하기",
     loading:"천간·지지를 세팅하고 오행 밸런스를 튜닝 중입니다...",
     pillarTitle:"만세력 (四柱八字)",
@@ -665,10 +718,13 @@ const TEXTS = {
     reportTitle:"2026년 직장·사업 운세 전략 리포트",
 btnPrint:"리포트 프린트",
     extraTitle:"2026 추가 데이터 (선택) — 더 구체한 조언용",
-    goalLabel:"2026 핵심 목표 (복수 선택)",
+            focusOpts:{"growth": "확장(스케일업)", "setup": "기초/정비(시스템)", "cleanup": "정리/리스크 관리"},
+roleOpts:{"biz": "사업/대표", "job": "직장/팀장", "switch": "이직/전환", "start": "창업 준비"},
+goalLabel:"2026 핵심 목표 (복수 선택)",
     riskLabelTitle:"리스크 성향",
     worryLabel:"지금 가장 큰 고민 (한 줄)",
-    extraHint:"※ 이 항목들은 ‘언제 무엇을 할지’ 타임라인을 더 현실적으로 만드는 데만 사용돼요.", 
+        worryPlaceholder:"예: 신규 거래처 확장 / 현금흐름 / 파트너십 / 건강 루틴",
+extraHint:"※ 이 항목들은 ‘언제 무엇을 할지’ 타임라인을 더 현실적으로 만드는 데만 사용돼요.", 
     alertMissingDate:"출생 연·월·일을 모두 입력해주세요."
   },
   ja:{
@@ -681,7 +737,8 @@ btnPrint:"리포트 프린트",
     dayDefault:"日",
     hourUnknown:"生まれた時間が不明（精度ダウン）",
     mbtiLabel:"16タイプ性格（MBTIベース）",
-    btnStart:"詳細分析スタート",
+        aiCreativeLabel:"AI Creative モード（より正直で個人的な助言を追加）",
+btnStart:"詳細分析スタート",
     btnRetry:"別の人を分析する",
     loading:"十干十二支と五行バランスを計算しています...",
     pillarTitle:"命式（四柱八字）",
@@ -690,10 +747,13 @@ btnPrint:"리포트 프린트",
     reportTitle:"2026年 ビジネス・キャリア運レポート",
 btnPrint:"レポートを印刷",
     extraTitle:"2026 追加データ（任意）— より具体的なアドバイス用",
-    goalLabel:"2026 重点目標（複数選択）",
+            focusOpts:{"growth": "拡大(スケール)", "setup": "基礎/整備(仕組み)", "cleanup": "整理/リスク管理"},
+roleOpts:{"biz": "事業/代表", "job": "会社/マネージャー", "switch": "転職/転換", "start": "起業準備"},
+goalLabel:"2026 重点目標（複数選択）",
     riskLabelTitle:"リスク傾向",
     worryLabel:"今の最大の悩み（一言）",
-    extraHint:"※ これらは「いつ何をするか」のタイムライン精度を上げるためだけに使います。", 
+        worryPlaceholder:"例：新規取引先拡大 / キャッシュフロー / パートナーシップ / 健康ルーティン",
+extraHint:"※ これらは「いつ何をするか」のタイムライン精度を上げるためだけに使います。", 
     alertMissingDate:"生年月日（年・月・日）をすべて入力してください。"
   },
   th:{
@@ -706,7 +766,8 @@ btnPrint:"レポートを印刷",
     dayDefault:"วัน",
     hourUnknown:"ไม่ทราบเวลาเกิด (ความแม่นยำลดลง)",
     mbtiLabel:"บุคลิกภาพ 16 แบบ (อ้างอิง MBTI)",
-    btnStart:"เริ่มวิเคราะห์แบบละเอียด",
+        aiCreativeLabel:"เปิดโหมด AI Creative (เพิ่มคำแนะนำที่ตรงและเป็นส่วนตัวขึ้น)",
+btnStart:"เริ่มวิเคราะห์แบบละเอียด",
     btnRetry:"วิเคราะห์ให้คนอื่น",
     loading:"กำลังคำนวณเสาฟ้า–ดินและสมดุลธาตุทั้งห้า...",
     pillarTitle:"ดวงชะตา (สี่เสาจาปะจือ)",
@@ -715,10 +776,13 @@ btnPrint:"レポートを印刷",
     reportTitle:"รายงานดวงการงานและธุรกิจ ปี 2026",
 btnPrint:"พิมพ์รายงาน",
     extraTitle:"ข้อมูลเพิ่มปี 2026 (ไม่บังคับ) — เพื่อคำแนะนำที่ชัดขึ้น",
-    goalLabel:"เป้าหมายหลักปี 2026 (เลือกได้หลายข้อ)",
+            focusOpts:{"growth": "ขยาย(สเกลอัป)", "setup": "วางระบบ/พื้นฐาน", "cleanup": "จัดระเบียบ/บริหารความเสี่ยง"},
+roleOpts:{"biz": "เจ้าของ/ธุรกิจ", "job": "พนักงาน/หัวหน้า", "switch": "เปลี่ยนงาน/เปลี่ยนสาย", "start": "เตรียมเริ่มธุรกิจ"},
+goalLabel:"เป้าหมายหลักปี 2026 (เลือกได้หลายข้อ)",
     riskLabelTitle:"สไตล์ความเสี่ยง",
     worryLabel:"กังวลที่สุดตอนนี้ (หนึ่งบรรทัด)",
-    extraHint:"※ ใช้เพื่อทำไทม์ไลน์ ‘ทำอะไรเมื่อไหร่’ ให้สมจริงขึ้นเท่านั้น", 
+        worryPlaceholder:"เช่น ขยายลูกค้าใหม่ / กระแสเงินสด / พาร์ทเนอร์ / สุขภาพและวินัย",
+extraHint:"※ ใช้เพื่อทำไทม์ไลน์ ‘ทำอะไรเมื่อไหร่’ ให้สมจริงขึ้นเท่านั้น", 
     alertMissingDate:"กรุณากรอกวัน เดือน ปีเกิดให้ครบ"
   },
   id:{
@@ -731,7 +795,8 @@ btnPrint:"พิมพ์รายงาน",
     dayDefault:"Hari",
     hourUnknown:"Tidak tahu jam lahir (akurasi menurun)",
     mbtiLabel:"16 tipe kepribadian (berbasis MBTI)",
-    btnStart:"Mulai analisis detail",
+        aiCreativeLabel:"Aktifkan mode AI Creative (saran lebih jujur & personal)",
+btnStart:"Mulai analisis detail",
     btnRetry:"Analisis orang lain",
     loading:"Menghitung batang langit, cabang bumi, dan keseimbangan lima unsur...",
     pillarTitle:"Diagram Saju (Empat Pilar)",
@@ -740,12 +805,46 @@ btnPrint:"พิมพ์รายงาน",
     reportTitle:"Laporan peruntungan karier & bisnis 2026",
 btnPrint:"Cetak laporan",
     extraTitle:"Data tambahan 2026 (opsional) — untuk saran lebih spesifik",
-    goalLabel:"Target utama 2026 (boleh pilih banyak)",
+            focusOpts:{"growth": "Ekspansi (scale up)", "setup": "Fondasi/sistem", "cleanup": "Rapikan/manajemen risiko"},
+roleOpts:{"biz": "Bisnis/Pemilik", "job": "Karyawan/Lead", "switch": "Pindah/Transisi", "start": "Persiapan usaha"},
+goalLabel:"Target utama 2026 (boleh pilih banyak)",
     riskLabelTitle:"Kecenderungan risiko",
     worryLabel:"Kekhawatiran terbesar saat ini (1 kalimat)",
-    extraHint:"※ Hanya dipakai untuk membuat timeline ‘kapan melakukan apa’ lebih realistis.", 
+        worryPlaceholder:"Contoh: tambah pelanggan / arus kas / kemitraan / rutinitas kesehatan",
+extraHint:"※ Hanya dipakai untuk membuat timeline ‘kapan melakukan apa’ lebih realistis.", 
     alertMissingDate:"Silakan isi tahun, bulan, dan tanggal lahir."
   }
+
+  ,en:{
+    headerTitle:"2026 Saju × 16 Types<br>Winning Strategy Report for Work & Business",
+    headerSubtitle:"A K-POP styled global fortune engine combining Korean-style Saju (Four Pillars) with MBTI-based 16 types",
+    inputTitle:"Enter your info",
+    namePlaceholder:"Name (e.g., Alex Kim) - includes name reading",
+    yearPlaceholder:"Birth year (e.g., 1992)",
+    monthDefault:"Month",
+    dayDefault:"Day",
+    hourUnknown:"Time unknown (lower accuracy)",
+    mbtiLabel:"Personality type (MBTI-based 16 types)",
+        aiCreativeLabel:"Enable AI Creative mode (adds more honest, personal advice)",
+btnStart:"Start precise reading",
+    btnRetry:"Analyze another person",
+    loading:"Setting stems/branches and tuning Five-Element balance...",
+    pillarTitle:"Four Pillars (Saju)",
+    sphereTitle:"My Soul Sphere",
+    chartTitle:"Five-Element Balance Radar",
+    reportTitle:"2026 Work & Business Strategy Report",
+    btnPrint:"Print report",
+    extraTitle:"2026 Extra Inputs (Optional) — for more specific advice",
+            focusOpts:{"growth": "Expansion (scale-up)", "setup": "Foundation/system", "cleanup": "Cleanup/risk management"},
+roleOpts:{"biz": "Business/Owner", "job": "Employee/Lead", "switch": "Career change", "start": "Preparing to start a business"},
+goalLabel:"Key goals for 2026 (multi-select)",
+    riskLabelTitle:"Risk tendency",
+    worryLabel:"Your biggest concern right now (one line)",
+        worryPlaceholder:"e.g., new clients / cash flow / partnerships / health routine",
+extraHint:"※ These are used only to make the 'when/what to do' timeline more realistic.",
+    alertMissingDate:"Please enter birth year, month, and day."
+  }
+
 };
 
 // 광고 텍스트
@@ -814,6 +913,18 @@ const MBTI_TRAITS = {
     J:"J – Judging, suka rencana, struktur, dan tenggat waktu",
     P:"P – Perceiving, suka fleksibel dan spontan"
   }
+
+  ,en:{
+    E:"E – Extraverted: gains energy from people, action, and the field",
+    I:"I – Introverted: recharges by thinking, planning, and solo focus",
+    S:"S – Sensing: strong with data, routines, and reality checks",
+    N:"N – Intuitive: strong with ideas, trends, and big-picture vision",
+    T:"T – Thinking: decides with logic and outcomes",
+    F:"F – Feeling: decides with empathy and relationship context",
+    J:"J – Judging: strong with plans, deadlines, and systems",
+    P:"P – Perceiving: strong with flexibility and adapting to change"
+  }
+
 };
 
 // 랜덤 유틸
@@ -836,7 +947,7 @@ function detectBrowserLang(){
   try{
     const n=(navigator.language||navigator.userLanguage||"en").toLowerCase();
     const c=n.slice(0,2);
-    if(["ko","ja","th","id"].includes(c)) return c;
+    if(["ko","ja","th","id","en"].includes(c)) return c;
     return "en";
   }catch(e){return "en";}
 }
@@ -912,6 +1023,30 @@ function setLanguage(lang){
   const btnPrintEl=document.getElementById("btnPrint");
   if(btnPrintEl) btnPrintEl.innerHTML = `<i class="fa-solid fa-print"></i><span>${t.btnPrint||"Print"}</span>`;
 
+
+  // AI Creative label
+  const aiCreativeLabelEl = document.getElementById("aiCreativeLabelText");
+  if(aiCreativeLabelEl) aiCreativeLabelEl.innerText = t.aiCreativeLabel || aiCreativeLabelEl.innerText;
+
+  // worry placeholder
+  const worryEl = document.getElementById("worry");
+  if(worryEl) worryEl.placeholder = t.worryPlaceholder || worryEl.placeholder;
+
+  // role/focus option labels
+  const roleSel = document.getElementById("role2026");
+  if(roleSel && t.roleOpts){
+    Array.from(roleSel.options).forEach(o=>{
+      if(t.roleOpts[o.value]) o.textContent = t.roleOpts[o.value];
+    });
+  }
+  const focusSel = document.getElementById("focus2026");
+  if(focusSel && t.focusOpts){
+    Array.from(focusSel.options).forEach(o=>{
+      if(t.focusOpts[o.value]) o.textContent = t.focusOpts[o.value];
+    });
+  }
+
+  initGoalChips();
   buildHourOptions(lang);
   updateAdTexts();
 }
@@ -1144,7 +1279,8 @@ function renderElemDesc(score,lang){
     ko:{목:"목(木)",화:"화(火)",토:"토(土)",금:"금(金)",수:"수(水)"},
     ja:{목:"木",화:"火",토:"土",금:"金",수:"水"},
     th:{목:"ธาตุไม้",화:"ธาตุไฟ",토:"ธาตุดิน",금:"ธาตุโลหะ",수:"ธาตุน้ำ"},
-    id:{목:"unsur Kayu",화:"unsur Api",토:"unsur Tanah",금:"unsur Logam",수:"unsur Air"}
+    id:{목:"unsur Kayu",화:"unsur Api",토:"unsur Tanah",금:"unsur Logam",수:"unsur Air"},
+    en:{목:"Wood",화:"Fire",토:"Earth",금:"Metal",수:"Water"}
   }[lang]||{목:"목(木)",화:"화(火)",토:"토(土)",금:"금(金)",수:"수(水)"};
 
   let text="";
@@ -1160,6 +1296,10 @@ function renderElemDesc(score,lang){
   }else if(lang==="id"){
     text=`<strong>Unsur terkuat:</strong> ${names[maxElem]} / <strong>Unsur terlemah:</strong> ${names[minElem]}<br>
     Unsur yang kuat adalah area di mana Anda boleh bermain agresif. Unsur yang lemah lebih baik dilengkapi lewat tim, sistem, atau jasa profesional.`;
+  }
+  else if(lang==="en"){
+    text=`<strong>Strongest element:</strong> ${names[maxElem]} / <strong>Weakest element:</strong> ${names[minElem]}<br>
+    Your strongest element is where you can push naturally this year. Your weakest element is best reinforced via people, systems, or outsourcing.`;
   }
   document.getElementById("elemDesc").innerHTML=text;
 }
@@ -1964,6 +2104,20 @@ window.onload=()=>{
   setLanguage(currentLang);
   updateAdTexts();
 };
+
+// init: auto language by browser + build UI
+document.addEventListener("DOMContentLoaded", ()=>{
+  const browserLang = detectBrowserLang();
+  const supported = ["ko","ja","th","id","en"];
+  const lang = supported.includes(browserLang) ? browserLang : "en";
+  const sel = document.getElementById("lang");
+  if(sel) sel.value = lang;
+  setLanguage(lang);
+  initGoalChips();
+  setRiskLabel();
+  const riskEl=document.getElementById("risk");
+  if(riskEl) riskEl.addEventListener("input", setRiskLabel);
+});
 </script>
 </body>
 </html>
