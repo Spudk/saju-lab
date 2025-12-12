@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 사주 × 16유형 운세 리포트</title>
+
+<!-- Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<!-- Chart / 3D -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+:root{
+  --k1:#ff9ff3;
+  --k2:#74b9ff;
+  --k3:#ffeaa7;
+  --bg:#050816;
+  --card:#0b1020;
+  --border:#222738;
+  --txt:#e5e9ff;
+  --muted:#94a3b8;
+  --accent:#a855f7;
+}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins','Apple SD Gothic Neo','Pretendard',system-ui,sans-serif;
+}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 0%,rgba(255,159,243,.16),transparent 60%),
+    radial-gradient(circle at 90% 0%,rgba(116,185,255,.14),transparent 60%),
+    radial-gradient(circle at 50% 120%,rgba(255,234,167,.18),transparent 65%),
+    #020617;
+  color:var(--txt);
+  padding-bottom:80px;
+}
+.container{max-width:1100px;margin:0 auto;padding:18px 16px 32px;}
+.glass{
+  background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(15,23,42,.96));
+  border-radius:26px;
+  border:1px solid rgba(148,163,184,.15);
+  box-shadow:0 22px 60px rgba(15,23,42,.75),0 0 0 1px rgba(148,163,184,.1);
+}
+.header-wrap{padding:28px 22px 26px;margin-bottom:20px;position:relative;overflow:hidden;}
+.header-gradient{
+  position:absolute;inset:-80px;
+  background:
+    radial-gradient(circle at 0% 0%,rgba(255,159,243,.25),transparent 55%),
+    radial-gradient(circle at 100% 0%,rgba(129,140,248,.22),transparent 55%),
+    radial-gradient(circle at 50% 120%,rgba(94,234,212,.2),transparent 60%);
+  opacity:.8;pointer-events:none;
+}
+.header-content{position:relative;z-index:1;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-badge{
+  width:32px;height:32px;border-radius:999px;
+  background:radial-gradient(circle at 30% 0%,#fff,rgba(248,250,252,.1));
+  display:flex;align-items:center;justify-content:center;
+  color:#0f172a;font-weight:800;font-size:0.9rem;
+  box-shadow:0 0 0 1px rgba(248,250,252,.7),0 8px 30px rgba(15,23,42,.5);
+}
+.brand-title{font-size:1.1rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+.brand-sub{font-size:.7rem;color:rgba(226,232,240,.7);text-transform:uppercase;}
+
+.lang-select{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 10px;border-radius:999px;
+  backdrop-filter:blur(16px);
+  background:rgba(15,23,42,.75);
+  border:1px solid rgba(148,163,184,.4);
+  font-size:.8rem;
+}
+.lang-select label{color:var(--muted);font-size:.78rem;}
+.lang-select select{
+  border:none;background:transparent;color:var(--txt);
+  font-size:.82rem;padding:4px 6px;
+}
+.lang-select select:focus{outline:none;}
+
+.hero-title{
+  font-size:2.1rem;
+  line-height:1.28;
+  font-weight:800;
+  background:linear-gradient(120deg,#e5e7eb,#f9a8d4,#93c5fd);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+.hero-sub{
+  margin-top:10px;
+  font-size:.95rem;
+  color:var(--muted);
+}
+.hero-tags{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;}
+.hero-tag{
+  font-size:.7rem;padding:4px 9px;border-radius:999px;
+  border:1px solid rgba(148,163,184,.45);
+  color:#cbd5f5;background:rgba(15,23,42,.6);
+}
+
+/* Card */
+.card{
+  margin-top:14px;
+  border-radius:24px;
+  background:radial-gradient(circle at 0 0,rgba(148,163,184,.15),transparent 55%),
+             linear-gradient(135deg,rgba(15,23,42,.96),rgba(15,23,42,.98));
+  border:1px solid rgba(30,64,175,.6);
+  padding:22px 18px 20px;
+}
+.card h2,.card h3{margin-bottom:12px;font-weight:700;}
+.section-title{
+  font-size:1.15rem;
+  display:flex;align-items:center;gap:10px;
+}
+.section-title::before{
+  content:"";width:4px;height:18px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#a855f7,#38bdf8);
+}
+
+/* Inputs */
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+input,select{
+  flex:1;
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,.5);
+  background:rgba(15,23,42,.9);
+  color:var(--txt);
+  font-size:.85rem;
+}
+input::placeholder{color:#64748b;}
+input:focus,select:focus{
+  outline:none;
+  border-color:#a855f7;
+  box-shadow:0 0 0 1px rgba(168,85,247,.5);
+}
+label{font-size:.8rem;color:var(--muted);}
+
+/* Button */
+.btn{
+  margin-top:6px;
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:8px;
+  padding:11px 20px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(120deg,#a855f7,#6366f1,#22d3ee);
+  background-size:200% 200%;
+  color:#0f172a;
+  font-weight:700;
+  font-size:.92rem;
+  cursor:pointer;
+  box-shadow:0 12px 35px rgba(56,189,248,.5);
+  transition:transform .1s,box-shadow .1s,background-position .5s;
+}
+.btn:hover{
+  transform:translateY(-1px);
+  background-position:100% 0;
+  box-shadow:0 16px 40px rgba(56,189,248,.7);
+}
+.btn:active{transform:scale(.97);box-shadow:0 9px 22px rgba(56,189,248,.5);}
+
+/* MBTI Grid */
+.mbti-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+  margin-top:8px;
+}
+.mbti-opt{
+  padding:8px 0;
+  border-radius:14px;
+  font-size:.8rem;
+  text-align:center;
+  cursor:pointer;
+  border:1px solid rgba(148,163,184,.5);
+  background:rgba(15,23,42,.9);
+  color:#e5e7eb;
+  transition:.12s;
+}
+.mbti-opt.selected{
+  border-color:#a855f7;
+  background:radial-gradient(circle at 0 0,rgba(244,114,182,.32),rgba(15,23,42,.98));
+  color:#f9fafb;
+  box-shadow:0 0 0 1px rgba(244,114,182,.6);
+}
+
+/* Pillars */
+.pillar-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+.pillar{
+  border-radius:18px;
+  padding:12px 8px 14px;
+  text-align:center;
+  background:linear-gradient(145deg,rgba(15,23,42,.9),rgba(17,24,39,.98));
+  border:1px solid rgba(148,163,184,.6);
+}
+.pillar-label{font-size:.78rem;color:var(--muted);margin-bottom:4px;}
+.pillar-gan{font-size:1.3rem;font-weight:800;}
+.pillar-ji{font-size:1.1rem;margin-top:2px;}
+.pillar-elem{margin-top:4px;font-size:.8rem;color:#f9a8d4;}
+
+/* Blocks */
+.block{
+  margin-top:14px;
+  padding:18px 14px 16px;
+  border-radius:18px;
+  background:radial-gradient(circle at 0 0,rgba(56,189,248,.2),transparent 55%),
+             rgba(15,23,42,.98);
+  border:1px solid rgba(148,163,184,.5);
+}
+.block h3{font-size:1rem;margin-bottom:6px;}
+.block p{font-size:.86rem;color:#e2e8f0;}
+.block ul{margin-top:6px;padding-left:18px;font-size:.83rem;color:var(--muted);}
+.block ul li{margin-bottom:3px;}
+
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 9px;border-radius:999px;
+  font-size:.72rem;margin-right:5px;margin-top:4px;
+  border:1px solid rgba(148,163,184,.6);
+  color:#cbd5f5;background:rgba(15,23,42,.9);
+}
+.tag i{font-size:.7rem;color:#f9a8d4;}
+
+.highlight{color:#fbbf24;font-weight:600;}
+
+#chartContainer{height:260px;}
+#soulSphere{
+  width:100%;height:260px;
+  border-radius:22px;
+  background:radial-gradient(circle at 10% 0%,#0f172a,#020617);
+  overflow:hidden;
+}
+
+/* 광고 배너 (조금 더 크게) */
+.ad-banner{
+  border-radius:20px;
+  border:1px dashed rgba(148,163,184,.85);
+  padding:16px 18px;
+  margin-top:22px;
+  margin-bottom:10px;
+  background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(30,64,175,.95));
+  font-size:.84rem;
+  color:#e2e8f0;
+  display:flex;align-items:flex-start;gap:12px;
+  min-height:72px;
+}
+.ad-label{
+  font-weight:700;
+  color:#f9a8d4;
+  font-size:.78rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+  padding-top:2px;
+}
+.ad-label i{font-size:.9rem;}
+.ad-text{flex:1;}
+.ad-email{font-weight:600;color:#e5e7eb;white-space:nowrap;font-size:.8rem;}
+
+#loading{padding:80px 16px;text-align:center;}
+#loading i{color:#a855f7;}
+
+#dayMasterDesc{margin-top:16px;font-size:.88rem;color:#e2e8f0;text-align:center;}
+
+.row-split{
+  display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;
+}
+.col{flex:1;min-width:280px;}
+
+#result{margin-top:12px;}
+
+@media(max-width:768px){
+  .hero-title{font-size:1.6rem;}
+  .pillar-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .row{flex-direction:column;}
+  .row-split{flex-direction:column;}
+  .ad-banner{flex-direction:column;align-items:flex-start;}
+  .ad-email{white-space:normal;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="glass header-wrap">
+    <div class="header-gradient"></div>
+    <div class="header-content">
+      <div class="top-bar">
+        <div class="brand">
+          <div class="brand-badge">SA</div>
+          <div>
+            <div class="brand-title">SAJU LAB</div>
+            <div class="brand-sub">K-DESTINY ENGINE</div>
+          </div>
+        </div>
+        <div class="lang-select">
+          <label for="lang">Language</label>
+          <select id="lang" onchange="setLanguage(this.value)">
+            <option value="ko">한국어</option>
+            <value="ja">日本語</value>
+            <option value="ja">日本語</option>
+            <option value="th">ไทย</option>
+            <option value="id">Bahasa Indonesia</option>
+          </select>
+        </div>
+      </div>
+
+      <h1 id="headerTitle" class="hero-title">
+        2026 사주 × 16유형<br>직장인 · 사업가 필승 전략 리포트
+      </h1>
+      <p id="headerSubtitle" class="hero-sub">
+        한국式 사주(四柱)와 MBTI 기반 16유형을 결합한 K-POP 스타일 글로벌 운세 엔진
+      </p>
+      <div class="hero-tags">
+        <span class="hero-tag">K-Style Destiny</span>
+        <span class="hero-tag">Business & Career Focus</span>
+        <span class="hero-tag">MBTI × Five Elements</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 입력 카드 -->
+  <div class="glass card" id="inputCard">
+    <h2 id="inputTitle" class="section-title">정보 입력</h2>
+
+    <div class="row">
+      <input type="number" id="year" placeholder="출생년도 (예: 1992)" min="1900" max="2030">
+    </div>
+    <div class="row">
+      <select id="month">
+        <option value="">월</option>
+      </select>
+      <select id="day">
+        <option value="">일</option>
+      </select>
+    </div>
+    <div class="row">
+      <select id="hour"></select>
+    </div>
+    <div class="row">
+      <input type="text" id="name" placeholder="성함 (예: 김철수) - 이름 풀이 포함">
+    </div>
+
+    <label id="mbtiLabel">성향 16유형 (MBTI 기반)</label>
+    <div class="mbti-grid" id="mbtiGrid"></div>
+    <input type="hidden" id="mbti">
+
+    <!-- 무료 랜덤 Creative 모드 옵션 -->
+    <div style="margin-top:10px;font-size:0.8rem;color:#94a3b8;">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="aiCreative" style="width:14px;height:14px;">
+        <span>AI Creative 모드 활성화 (조금 더 솔직하고 개인적인 조언 추가)</span>
+      </label>
+    </div>
+
+    <button class="btn" id="btnStart" onclick="startAnalysis()">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span>정밀 분석 시작</span>
+    </button>
+
+    <!-- 첫 화면 하단 광고 -->
+    <div class="ad-banner">
+      <span class="ad-label"><i class="fa-regular fa-rectangle-ad"></i> AD</span>
+      <span class="ad-text" id="adHomeText">
+        이곳은 광고 영역입니다. 추후 실제 광고가 노출됩니다.
+      </span>
+      <span class="ad-email" id="adHomeEmail">
+        광고문의: daezhobiz@gmail.com
+      </span>
+    </div>
+  </div>
+
+  <!-- 로딩 -->
+  <div id="loading" style="display:none;">
+    <i class="fas fa-yin-yang fa-spin fa-4x"></i>
+    <h2 id="loadingText" style="margin-top:22px;font-size:1rem;">
+      천간·지지를 세팅하고 오행 밸런스를 튜닝 중입니다...
+    </h2>
+  </div>
+
+  <!-- 결과 -->
+  <div id="result" style="display:none;">
+
+    <!-- 결과 상단 광고 -->
+    <div class="ad-banner">
+      <span class="ad-label"><i class="fa-regular fa-rectangle-ad"></i> AD</span>
+      <span class="ad-text" id="adResultText">
+        이곳은 광고 영역입니다. 추후 실제 광고가 노출됩니다.
+      </span>
+      <span class="ad-email" id="adResultEmail">
+        광고문의: daezhobiz@gmail.com
+      </span>
+    </div>
+
+    <div class="glass card">
+      <h2 class="section-title" id="pillarTitle">만세력 (四柱八字)</h2>
+      <div class="pillar-grid" id="pillars"></div>
+      <div id="dayMasterDesc"></div>
+    </div>
+
+    <div class="row-split">
+      <div class="glass card col">
+        <h3 id="sphereTitle" class="section-title">나의 영혼 구체 (魂球)</h3>
+        <div id="soulSphere"></div>
+      </div>
+      <div class="glass card col">
+        <h3 id="chartTitle" class="section-title">오행 밸런스 레이더 차트</h3>
+        <div id="chartContainer"><canvas id="elemChart"></canvas></div>
+        <div id="elemDesc" style="margin-top:10px;font-size:.86rem;color:var(--muted);"></div>
+      </div>
+    </div>
+
+    <div class="glass card">
+      <h2 class="section-title" id="reportTitle">2026년 직장·사업 운세 전략 리포트</h2>
+      <div id="reportBlocks"></div>
+
+      <!-- 🔮 랜덤 Creative 보너스 리딩 영역 -->
+      <div id="aiCreativeBlock"></div>
+    </div>
+
+    <button class="btn" id="btnRetry" onclick="location.reload()" style="margin-top:14px;">
+      <i class="fa-solid fa-rotate-left"></i>
+      <span>다른 사람 다시 분석하기</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ================== 기본 데이터 ==================
+const GAN = ["갑","을","병","정","무","기","경","신","임","계"];
+const JI  = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
+const ELEM = {갑:"목",을:"목",병:"화",정:"화",무:"토",기:"토",경:"금",신:"금",임:"수",계:"수"};
+const MBTI16 = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+
+let currentLang = 'ko';
+
+// 시간 레이블
+const HOUR_LABELS = {
+  ko:[
+    "자시 23:30~01:29","축시 01:30~03:29","인시 03:30~05:29","묘시 05:30~07:29",
+    "진시 07:30~09:29","사시 09:30~11:29","오시 11:30~13:29","미시 13:30~15:29",
+    "신시 15:30~17:29","유시 17:30~19:29","술시 19:30~21:29","해시 21:30~23:29"
+  ],
+  ja:[
+    "子の刻 23:30〜01:29","丑の刻 01:30〜03:29","寅の刻 03:30〜05:29","卯の刻 05:30〜07:29",
+    "辰の刻 07:30〜09:29","巳の刻 09:30〜11:29","午の刻 11:30〜13:29","未の刻 13:30〜15:29",
+    "申の刻 15:30〜17:29","酉の刻 17:30〜19:29","戌の刻 19:30〜21:29","亥の刻 21:30〜23:29"
+  ],
+  th:[
+    "23:30–01:29","01:30–03:29","03:30–05:29","05:30–07:29",
+    "07:30–09:29","09:30–11:29","11:30–13:29","13:30–15:29",
+    "15:30–17:29","17:30–19:29","19:30–21:29","21:30–23:29"
+  ],
+  id:[
+    "23:30–01:29","01:30–03:29","03:30–05:29","05:30–07:29",
+    "07:30–09:29","09:30–11:29","11:30–13:29","13:30–15:29",
+    "15:30–17:29","17:30–19:29","19:30–21:29","21:30–23:29"
+  ]
+};
+
+// 다국어 UI 텍스트
+const TEXTS = {
+  ko:{
+    headerTitle:"2026 사주 × 16유형<br>직장인 · 사업가 필승 전략 리포트",
+    headerSubtitle:"한국式 사주와 MBTI 기반 성향 16유형을 결합한 K-POP 스타일 글로벌 운세 엔진",
+    inputTitle:"정보 입력",
+    namePlaceholder:"성함 (예: 김철수) - 이름 풀이 포함",
+    yearPlaceholder:"출생년도 (예: 1992)",
+    monthDefault:"월",
+    dayDefault:"일",
+    hourUnknown:"시간 모름 (정확도↓)",
+    mbtiLabel:"성향 16유형 (MBTI 기반)",
+    btnStart:"정밀 분석 시작",
+    btnRetry:"다른 사람 다시 분석하기",
+    loading:"천간·지지를 세팅하고 오행 밸런스를 튜닝 중입니다...",
+    pillarTitle:"만세력 (四柱八字)",
+    sphereTitle:"나의 영혼 구체 (魂球)",
+    chartTitle:"오행 밸런스 레이더 차트",
+    reportTitle:"2026년 직장·사업 운세 전략 리포트",
+    alertMissingDate:"출생 연·월·일을 모두 입력해주세요."
+  },
+  ja:{
+    headerTitle:"2026 四柱推命 × 16タイプ<br>ビジネス戦略レポート",
+    headerSubtitle:"韓国式四柱推命とMBTIベース16タイプを掛け合わせたK-POPスタイル占いエンジン",
+    inputTitle:"情報入力",
+    namePlaceholder:"お名前（例：山田太郎）",
+    yearPlaceholder:"生年（例：1992）",
+    monthDefault:"月",
+    dayDefault:"日",
+    hourUnknown:"生まれた時間が不明（精度ダウン）",
+    mbtiLabel:"16タイプ性格（MBTIベース）",
+    btnStart:"詳細分析スタート",
+    btnRetry:"別の人を分析する",
+    loading:"十干十二支と五行バランスを計算しています...",
+    pillarTitle:"命式（四柱八字）",
+    sphereTitle:"魂のエナジーボール",
+    chartTitle:"五行バランス・レーダーチャート",
+    reportTitle:"2026年 ビジネス・キャリア運レポート",
+    alertMissingDate:"生年月日（年・月・日）をすべて入力してください。"
+  },
+  th:{
+    headerTitle:"รายงานกลยุทธ์ปี 2026<br>ซาจู × บุคลิกภาพ 16 แบบ",
+    headerSubtitle:"ผสมดวงจีนสี่เสากับ MBTI สไตล์ K-POP เพื่อเจาะลึกการงานและธุรกิจ",
+    inputTitle:"กรอกข้อมูล",
+    namePlaceholder:"ชื่อ (เช่น ธนากร) - รวมวิเคราะห์ชื่อ",
+    yearPlaceholder:"ปีเกิด (เช่น 1992)",
+    monthDefault:"เดือน",
+    dayDefault:"วัน",
+    hourUnknown:"ไม่ทราบเวลาเกิด (ความแม่นยำลดลง)",
+    mbtiLabel:"บุคลิกภาพ 16 แบบ (อ้างอิง MBTI)",
+    btnStart:"เริ่มวิเคราะห์แบบละเอียด",
+    btnRetry:"วิเคราะห์ให้คนอื่น",
+    loading:"กำลังคำนวณเสาฟ้า–ดินและสมดุลธาตุทั้งห้า...",
+    pillarTitle:"ดวงชะตา (สี่เสาจาปะจือ)",
+    sphereTitle:"ลูกแก้วพลังวิญญาณ",
+    chartTitle:"เรดาร์สมดุลธาตุทั้งห้า",
+    reportTitle:"รายงานดวงการงานและธุรกิจ ปี 2026",
+    alertMissingDate:"กรุณากรอกวัน เดือน ปีเกิดให้ครบ"
+  },
+  id:{
+    headerTitle:"Laporan Strategi 2026<br>Saju × 16 Tipe Kepribadian",
+    headerSubtitle:"Menggabungkan saju Korea dengan 16 tipe MBTI dalam gaya K-POP untuk karier & bisnis",
+    inputTitle:"Masukkan data",
+    namePlaceholder:"Nama (contoh: Andi) - termasuk analisis nama",
+    yearPlaceholder:"Tahun lahir (mis: 1992)",
+    monthDefault:"Bulan",
+    dayDefault:"Hari",
+    hourUnknown:"Tidak tahu jam lahir (akurasi menurun)",
+    mbtiLabel:"16 tipe kepribadian (berbasis MBTI)",
+    btnStart:"Mulai analisis detail",
+    btnRetry:"Analisis orang lain",
+    loading:"Menghitung batang langit, cabang bumi, dan keseimbangan lima unsur...",
+    pillarTitle:"Diagram Saju (Empat Pilar)",
+    sphereTitle:"Bola energi jiwa",
+    chartTitle:"Radar keseimbangan lima unsur",
+    reportTitle:"Laporan peruntungan karier & bisnis 2026",
+    alertMissingDate:"Silakan isi tahun, bulan, dan tanggal lahir."
+  }
+};
+
+// 광고 텍스트
+const AD_TEXTS = {
+  ko:{
+    text:"이곳은 광고 영역입니다. 추후 실제 광고가 노출됩니다.",
+    inquiry:"광고문의: daezhobiz@gmail.com"
+  },
+  ja:{
+    text:"ここは広告スペースです。今後、本物の広告が掲載されます。",
+    inquiry:"広告掲載のお問い合わせ: daezhobiz@gmail.com"
+  },
+  th:{
+    text:"พื้นที่โฆษณา ขณะนี้เป็นข้อความตัวอย่างเท่านั้น",
+    inquiry:"ติดต่อโฆษณา: daezhobiz@gmail.com"
+  },
+  id:{
+    text:"Ruang iklan. Saat ini masih teks contoh.",
+    inquiry:"Kontak iklan: daezhobiz@gmail.com"
+  },
+  en:{
+    text:"Ad space. Real ads will appear here later.",
+    inquiry:"Ad inquiry: daezhobiz@gmail.com"
+  }
+};
+
+// MBTI 특성 텍스트
+const MBTI_TRAITS = {
+  ko:{
+    E:"외향(E) – 사람, 현장, 즉흥적인 만남에서 에너지를 얻음",
+    I:"내향(I) – 혼자 정리·연구·기획하면서 에너지를 충전",
+    S:"감각(S) – 데이터, 루틴, 현실에 강함",
+    N:"직관(N) – 아이디어, 트렌드, 큰 그림에 강함",
+    T:"사고(T) – 논리·성과 중심으로 결정",
+    F:"감정(F) – 관계·분위기·사람의 마음을 우선",
+    J:"판단(J) – 계획, 마감, 시스템에 강함",
+    P:"인식(P) – 유연성, 즉흥성, 변화 대응에 강함"
+  },
+  ja:{
+    E:"外向(E) – 人との交流や現場でエネルギーを得るタイプ",
+    I:"内向(I) – 一人で考えたり整理する時間で充電するタイプ",
+    S:"感覚(S) – データや現実的な事実に強い",
+    N:"直観(N) – アイデアやコンセプト、未来像に強い",
+    T:"思考(T) – 論理と結果を重視して判断",
+    F:"感情(F) – 人間関係と雰囲気を重視して判断",
+    J:"判断(J) – 計画と締切、構造を好む",
+    P:"知覚(P) – 変化と柔軟性、選択肢の多さを好む"
+  },
+  th:{
+    E:"E – สายออกนอกบ้าน ชอบพบคน พลังมาจากการเคลื่อนไหว",
+    I:"I – สายอินโทรเวิร์ต ชาร์จพลังเวลาได้อยู่กับตัวเอง",
+    S:"S – โฟกัสข้อมูลจริง ขั้นตอน และสิ่งที่จับต้องได้",
+    N:"N – โฟกัสไอเดีย ภาพใหญ่ และความเป็นไปได้ใหม่ๆ",
+    T:"T – ตัดสินใจด้วยเหตุผลและผลลัพธ์",
+    F:"F – ตัดสินใจโดยคำนึงถึงความรู้สึกและความสัมพันธ์",
+    J:"J – ชอบแผน ตาราง และความชัดเจน",
+    P:"P – ชอบความยืดหยุ่น ปรับเปลี่ยนตามสถานการณ์"
+  },
+  id:{
+    E:"E – Ekstrovert, mengisi energi lewat orang dan aktivitas luar",
+    I:"I – Introvert, mengisi energi lewat waktu sendiri dan fokus",
+    S:"S – Sensing, kuat di data, detail, dan realitas",
+    N:"N – Intuitive, kuat di ide, konsep, dan visi besar",
+    T:"T – Thinking, memutuskan dengan logika dan hasil",
+    F:"F – Feeling, memutuskan dengan empati dan relasi",
+    J:"J – Judging, suka rencana, struktur, dan tenggat waktu",
+    P:"P – Perceiving, suka fleksibel dan spontan"
+  }
+};
+
+// 랜덤 유틸
+function pickRandom(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function pickRandomN(arr,n){
+  const copy=[...arr];
+  const result=[];
+  for(let i=0;i<n && copy.length>0;i++){
+    const idx=Math.floor(Math.random()*copy.length);
+    result.push(copy[idx]);
+    copy.splice(idx,1);
+  }
+  return result;
+}
+
+// 브라우저 언어 감지
+function detectBrowserLang(){
+  try{
+    const n=(navigator.language||navigator.userLanguage||"en").toLowerCase();
+    const c=n.slice(0,2);
+    if(["ko","ja","th","id"].includes(c)) return c;
+    return "en";
+  }catch(e){return "en";}
+}
+
+// 광고 텍스트 업데이트
+function updateAdTexts(){
+  const lang = AD_TEXTS[currentLang] ? currentLang : "ko";
+  const ad = AD_TEXTS[lang];
+  const hText=document.getElementById("adHomeText");
+  const hEmail=document.getElementById("adHomeEmail");
+  const rText=document.getElementById("adResultText");
+  const rEmail=document.getElementById("adResultEmail");
+  if(hText) hText.innerText = ad.text;
+  if(hEmail) hEmail.innerText = ad.inquiry;
+  if(rText) rText.innerText = ad.text;
+  if(rEmail) rEmail.innerText = ad.inquiry;
+}
+
+// 시간 옵션 생성
+function buildHourOptions(lang){
+  const hourSel=document.getElementById("hour");
+  if(!hourSel) return;
+  const old=hourSel.value;
+  const t=TEXTS[lang]||TEXTS.ko;
+  const labels=HOUR_LABELS[lang]||HOUR_LABELS.ko;
+
+  hourSel.innerHTML="";
+  const opt0=document.createElement("option");
+  opt0.value="";
+  opt0.textContent=t.hourUnknown;
+  hourSel.appendChild(opt0);
+  labels.forEach((lab,i)=>{
+    const o=document.createElement("option");
+    o.value=i;
+    o.textContent=lab;
+    hourSel.appendChild(o);
+  });
+  if(old!=="") hourSel.value=old;
+}
+
+// 언어 변경
+function setLanguage(lang){
+  currentLang=lang;
+  const t=TEXTS[lang]||TEXTS.ko;
+
+  document.getElementById("headerTitle").innerHTML=t.headerTitle;
+  document.getElementById("headerSubtitle").innerText=t.headerSubtitle;
+  document.getElementById("inputTitle").innerText=t.inputTitle;
+  document.getElementById("name").placeholder=t.namePlaceholder;
+  document.getElementById("year").placeholder=t.yearPlaceholder;
+  const mSel=document.getElementById("month");
+  const dSel=document.getElementById("day");
+  if(mSel && mSel.options.length>0) mSel.options[0].text=t.monthDefault;
+  if(dSel && dSel.options.length>0) dSel.options[0].text=t.dayDefault;
+  document.getElementById("mbtiLabel").innerText=t.mbtiLabel;
+  document.getElementById("btnStart").innerHTML=`<i class="fa-solid fa-wand-magic-sparkles"></i><span>${t.btnStart}</span>`;
+  document.getElementById("btnRetry").innerHTML=`<i class="fa-solid fa-rotate-left"></i><span>${t.btnRetry}</span>`;
+  document.getElementById("loadingText").innerText=t.loading;
+  document.getElementById("pillarTitle").innerText=t.pillarTitle;
+  document.getElementById("sphereTitle").innerText=t.sphereTitle;
+  document.getElementById("chartTitle").innerText=t.chartTitle;
+  document.getElementById("reportTitle").innerText=t.reportTitle;
+
+  buildHourOptions(lang);
+  updateAdTexts();
+}
+
+// 사주 계산
+function getSaju(y,m,d,h=-1){
+  let yG=(y-3)%10; if(yG<0)yG+=10;
+  let yJ=(y-3)%12; if(yJ<0)yJ+=12;
+
+  const isLeap=(y%4===0 && (y%100!==0||y%400===0));
+  const daysToMonth=[0,31,59,90,120,151,181,212,243,273,304,334];
+  let dayOfYear=daysToMonth[m-1]+d+(m>2 && isLeap?1:0);
+  const lichunApprox=35; // 대략 입춘
+
+  let realM;
+  if(m===1 || (m===2 && dayOfYear<lichunApprox)){
+    realM=m+11;
+    yG=(yG-1+10)%10;
+    yJ=(yJ-1+12)%12;
+  }else realM=m-1;
+
+  let mG=(yG*2+realM+10)%10;
+  let mJ=(realM+1)%12;
+
+  const base1900=new Date(1900,0,31);
+  const target=new Date(y,m-1,d);
+  let days=Math.floor((target-base1900)/86400000);
+  let dG=days%10; let dJ=days%12;
+  if(dG<0)dG+=10; if(dJ<0)dJ+=12;
+
+  let hG=-1,hJ=h;
+  if(h>=0) hG=(dG*2+h)%10;
+
+  return {
+    year:{g:GAN[yG],j:JI[yJ]},
+    month:{g:GAN[mG],j:JI[mJ]},
+    day:{g:GAN[dG],j:JI[dJ]},
+    hour:h>=0?{g:GAN[hG],j:JI[hJ]}:null
+  };
+}
+
+// 오행 점수
+function calcScore(s){
+  let sc={목:0,화:0,토:0,금:0,수:0};
+  const dayE=ELEM[s.day.g];
+  [s.year,s.month,s.day,s.hour].filter(Boolean).forEach(p=>{
+    sc[ELEM[p.g]] += (p.g===s.day.g?2:1);
+  });
+  const branchElem={자:"수",축:"토",인:"목",묘:"목",진:"토",사:"화",오:"화",미:"토",신:"금",유:"금",술:"토",해:"수"}[s.day.j];
+  sc[branchElem]+=2;
+
+  const seq=["목","화","토","금","수"];
+  const idx=seq.indexOf(dayE);
+  sc[seq[(idx+1)%5]]+=1;
+  sc[seq[(idx+2)%5]]+=0.5;
+  return sc;
+}
+
+// 차트
+let chartInstance=null;
+function renderChart(score,lang){
+  const labelsMap={
+    ko:["목(木)","화(火)","토(土)","금(金)","수(水)"],
+    ja:["木","火","土","金","水"],
+    th:["ไม้","ไฟ","ดิน","โลหะ","น้ำ"],
+    id:["Kayu","Api","Tanah","Logam","Air"]
+  };
+  const labels=labelsMap[lang]||labelsMap.ko;
+  const data=[score.목,score.화,score.토,score.금,score.수];
+  const maxVal=Math.max(...data,5);
+  const ctx=document.getElementById("elemChart").getContext("2d");
+  if(chartInstance) chartInstance.destroy();
+  chartInstance=new Chart(ctx,{
+    type:"radar",
+    data:{labels,
+      datasets:[{
+        data,
+        fill:true,
+        borderColor:"#a855f7",
+        backgroundColor:"rgba(168,85,247,0.18)",
+        pointBackgroundColor:"#22d3ee",
+        borderWidth:2,
+        pointRadius:4
+      }]
+    },
+    options:{
+      scales:{
+        r:{
+          angleLines:{color:"rgba(148,163,184,0.25)"},
+          grid:{color:"rgba(30,64,175,0.45)"},
+          pointLabels:{
+            color:"#e5e7eb",
+            font:{size:12,weight:"600",family:"Poppins"}
+          },
+          suggestedMin:0,
+          suggestedMax:maxVal
+        }
+      },
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+
+// 3D 구체
+function renderSoulSphere(dayElem,score){
+  const container=document.getElementById("soulSphere");
+  container.innerHTML="";
+  const w=container.clientWidth;
+  const h=container.clientHeight;
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,w/h,0.1,1000);
+  camera.position.z=3;
+
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setSize(w,h);
+  renderer.setPixelRatio(window.devicePixelRatio||1);
+  container.appendChild(renderer.domElement);
+
+  const elemColor={목:0x22c55e,화:0xf97316,토:0xfacc15,금:0x38bdf8,수:0x6366f1}[dayElem]||0xffffff;
+
+  const geom=new THREE.SphereGeometry(1,64,64);
+  const mat=new THREE.MeshStandardMaterial({
+    color:elemColor,
+    metalness:.6,
+    roughness:.25,
+    emissive:elemColor,
+    emissiveIntensity:.25
+  });
+  const sphere=new THREE.Mesh(geom,mat);
+  scene.add(sphere);
+
+  const wireGeom=new THREE.SphereGeometry(1.02,26,18);
+  const wireMat=new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:.3});
+  const wire=new THREE.Mesh(wireGeom,wireMat);
+  scene.add(wire);
+
+  scene.add(new THREE.AmbientLight(0xffffff,.6));
+  const light=new THREE.PointLight(0xffffff,1.4);
+  light.position.set(2,3,4);
+  scene.add(light);
+
+  const base=(score.목+score.화+score.토+score.금+score.수)/5;
+  const s=1+base/20;
+  sphere.scale.set(s,s,s);
+
+  function animate(){
+    requestAnimationFrame(animate);
+    sphere.rotation.y+=0.005;
+    wire.rotation.y-=0.003;
+    renderer.render(scene,camera);
+  }
+  animate();
+}
+
+// 오행 설명
+function renderElemDesc(score,lang){
+  const sorted=Object.entries(score).sort((a,b)=>b[1]-a[1]);
+  const maxElem=sorted[0][0];
+  const minElem=sorted[sorted.length-1][0];
+
+  const names={
+    ko:{목:"목(木)",화:"화(火)",토:"토(土)",금:"금(金)",수:"수(水)"},
+    ja:{목:"木",화:"火",토:"土",금:"金",수:"水"},
+    th:{목:"ธาตุไม้",화:"ธาตุไฟ",토:"ธาตุดิน",금:"ธาตุโลหะ",수:"ธาตุน้ำ"},
+    id:{목:"unsur Kayu",화:"unsur Api",토:"unsur Tanah",금:"unsur Logam",수:"unsur Air"}
+  }[lang]||{목:"목(木)",화:"화(火)",토:"토(土)",금:"금(金)",수:"수(水)"};
+
+  let text="";
+  if(lang==="ko"){
+    text=`<strong>가장 강한 기운:</strong> ${names[maxElem]} / <strong>가장 약한 기운:</strong> ${names[minElem]}<br>
+    강한 기운은 올해 자연스럽게 <span class="highlight">밀어붙여도 되는 영역</span>이고, 약한 기운은 사람·시스템·외주를 통해 보완하면 좋습니다.`;
+  }else if(lang==="ja"){
+    text=`<strong>最も強い要素:</strong> ${names[maxElem]} ／ <strong>最も弱い要素:</strong> ${names[minElem]}<br>
+    強い要素は今年あなたが主役になりやすい分野、弱い要素は仲間や専門家に任せると成果が出やすい分野です。`;
+  }else if(lang==="th"){
+    text=`<strong>ธาตุที่เด่นที่สุด:</strong> ${names[maxElem]} / <strong>ธาตุที่อ่อนที่สุด:</strong> ${names[minElem]}<br>
+    ธาตุที่เด่นคือพลังที่ใช้แล้วง่ายและไหลลื่น ส่วนธาตุที่อ่อนควรเติมด้วยทีม ระบบ หรือผู้เชี่ยวชาญจะดีที่สุด`;
+  }else if(lang==="id"){
+    text=`<strong>Unsur terkuat:</strong> ${names[maxElem]} / <strong>Unsur terlemah:</strong> ${names[minElem]}<br>
+    Unsur yang kuat adalah area di mana Anda boleh bermain agresif. Unsur yang lemah lebih baik dilengkapi lewat tim, sistem, atau jasa profesional.`;
+  }
+  document.getElementById("elemDesc").innerHTML=text;
+}
+
+// 일간 설명
+function renderDayMasterDesc(dayGan,dayElem,lang){
+  let text="";
+  if(lang==="ko"){
+    const map={
+      갑:"갑목 일간 – 큰 나무, 정면 돌파형 리더",
+      을:"을목 일간 – 덩굴과 꽃, 섬세한 성장형 전략가",
+      병:"병화 일간 – 태양, 전면에서 이끄는 스타형 리더",
+      정:"정화 일간 – 촛불, 디테일과 감성의 크리에이터",
+      무:"무토 일간 – 큰 산, 버티는 책임형 기둥",
+      기:"기토 일간 – 논밭, 조율과 서포트의 프로조정가",
+      경:"경금 일간 – 검, 승부와 결단의 딜메이커",
+      신:"신금 일간 – 보석, 퀄리티와 브랜딩의 장인",
+      임:"임수 일간 – 큰 바다, 정보와 네트워크의 플레이메이커",
+      계:"계수 일간 – 비와 안개, 기획과 인사이트의 프로기획자"
+    };
+    const base=map[dayGan]||"";
+    text=`<span class="highlight">${base}</span> 에 해당합니다.  
+    즉, ${dayElem==="목"?"사람을 키우고 판을 넓히는 데 강점이 있고":""
+         || dayElem==="화"?"열정과 드라이브, 브랜드 파워를 키우는 데 강점이 있고":""
+         || dayElem==="토"?"신뢰·책임·꾸준함으로 승부를 보는 타입이고":""
+         || dayElem==="금"?"분석·협상·마감에서 날카로운 강점을 가지며":""
+         || dayElem==="수"?"정보·트렌드·유연한 사고에서 강점을 가지며":""}
+    2026년에는 이 기질을 비즈니스와 커리어 전략의 메인 무기로 쓰면 좋습니다.`;
+  }else if(lang==="ja"){
+    text=`あなたの「日干」は <span class="highlight">${dayGan}</span> で、今年の軸となる性格エネルギーを表します。  
+    仕事では、この日干のイメージに沿った役割を意識すると、ムリなく成果が出やすくなります。`;
+  }else if(lang==="th"){
+    text=`ธาตุวันเกิดของคุณคือ <span class="highlight">${dayGan}</span> ซึ่งเป็นแกนบุคลิกหลักในดวงนี้  
+    ถ้าใช้สไตล์นี้เป็นจุดเด่นหลักในงานหรือธุรกิจ จะรู้สึกไหลลื่นและไม่ฝืนตัวเองจนเกินไป`;
+  }else if(lang==="id"){
+    text=`Batang hari Anda adalah <span class="highlight">${dayGan}</span>, yaitu inti karakter dalam saju.  
+    Saat karier dan bisnis mengikuti karakter alami ini, langkah Anda akan terasa lebih ringan dan konsisten.`;
+  }
+  document.getElementById("dayMasterDesc").innerHTML=text;
+}
+
+// MBTI 설명 텍스트
+function getMbtiTraits(mbti,lang){
+  const d=MBTI_TRAITS[lang]||MBTI_TRAITS.ko;
+  const t=mbti.toUpperCase();
+  return {
+    ei:d[t[0]],
+    ns:d[t[1]],
+    tf:d[t[2]],
+    jp:d[t[3]]
+  };
+}
+
+// 2026 리포트 생성 (기본 버전 – 구체적 조언 강화)
+function render2026Report(name,dayGan,dayElem,mbti,score,lang){
+  const sorted=Object.entries(score).sort((a,b)=>b[1]-a[1]);
+  const maxElem=sorted[0][0];
+  const minElem=sorted[sorted.length-1][0];
+  const trait=getMbtiTraits(mbti,lang);
+  const elemNameKo={목:"목(木)",화:"화(火)",토:"토(土)",금:"금(金)",수:"수(水)"};
+  const strongKo=elemNameKo[maxElem];
+  const weakKo=elemNameKo[minElem];
+
+  let html="";
+  const safeName = name|| (lang==="ja"?"あなた":lang==="th"?"คุณ":lang==="id"?"Anda":"당신");
+
+  if(lang==="ko"){
+    // 구체적 시기/행동 추가
+    const timingAdvice = {
+      목:"1~3월, 9~10월처럼 계절이 바뀌는 시기에 ‘신규 프로젝트 제안’과 ‘새 거래처 미팅’을 몰아서 잡아 보세요.",
+      화:"5~8월, 매출 피크 시즌과 휴가 시즌 전후에 프로모션·런칭·브랜딩 캠페인을 집중적으로 배치하면 좋습니다.",
+      토:"3·6·9·12월 분기 마감 시점에 구조 정리, 조직 개편, 비용 점검을 정례화하면 큰 도움이 됩니다.",
+      금:"계약과 정산이 몰리는 달(3월, 6월, 9월, 12월)에 중요한 서명·협상 일정을 모아서 처리해 보세요.",
+      수:"9~12월, 연말로 갈수록 정보·네트워크가 강해지니, 세미나·박람회·출장을 이 구간에 맞추면 유리합니다."
+    }[maxElem];
+
+    const avoidTiming = {
+      목:"여름 한가운데(7~8월)에는 너무 많은 새 프로젝트를 동시에 벌이기보다, 이미 진행 중인 것 정리에 더 집중하세요.",
+      화:"체력과 감정이 출렁이기 쉬운 7~8월에는 ‘감정적인 결정’과 ‘즉흥적인 투자’는 한 번 더 재검토해 보는 게 좋습니다.",
+      토:"과로와 책임 과부하가 오기 쉬운 11~12월에는 새로운 장기 약속이나 큰 고정비 증가는 조금 미루는 편이 안전합니다.",
+      금:"상대가 정리되지 않은 상태에서 급하게 계약을 밀어붙이는 1~2월은 피하고, 문서 검토 시간을 충분히 두세요.",
+      수:"멘탈이 예민해지기 쉬운 2~3월에는 관계 정리·해고·결별 같은 이슈는 최대한 부드럽게, 단계적으로 진행하는 것이 좋습니다."
+    }[minElem];
+
+    html+=`
+    <div class="block">
+      <h3>1. 2026년 전체 흐름 – ${safeName}님의 K-스타일 운세 요약</h3>
+      <p>
+        ${safeName}님은 <span class="highlight">${dayGan}일간·${dayElem}의 기운</span> 위에 
+        <span class="highlight">${mbti}</span> 유형이 겹쳐져 있습니다.  
+        기본적으로 <span class="highlight">${trait.ei}</span>, <span class="highlight">${trait.ns}</span>, 
+        <span class="highlight">${trait.tf}</span>, <span class="highlight">${trait.jp}</span> 성향을 가진 사람입니다.
+      </p>
+      <p>
+        2026년 병오년은 불(火) 에너지가 강하게 올라오는 해입니다.  
+        이 말은, <span class="highlight">속도·드라이브·브랜딩·승부수</span>가 키워드라는 뜻입니다.  
+        오행 점수로 볼 때 <span class="highlight">가장 강한 기운은 ${strongKo}, 가장 약한 기운은 ${weakKo}</span>이므로,  
+        강한 쪽은 밀어붙이고 약한 쪽은 사람·시스템·외주를 통해 보완하는 전략이 좋습니다.
+      </p>
+      <p style="margin-top:4px;">
+        ✔ <span class="highlight">추천 타이밍:</span> ${timingAdvice || "상반기(1~6월)는 셋업, 하반기(7~12월)는 실행과 확장에 포커스를 두면 좋습니다."}<br>
+        ✔ <span class="highlight">주의 타이밍:</span> ${avoidTiming || "피로도가 누적되는 7~8월, 11~12월에는 무리한 확장이나 새로운 큰 고정비 증가는 한 번 더 검토해 보세요."}
+      </p>
+      <div class="tag"><i class="fa-solid fa-bolt"></i>핵심 키워드: 속도 · 브랜딩 · 판깔기</div>
+      <div class="tag"><i class="fa-solid fa-masks-theater"></i>${mbti} × ${dayGan}일간 조합</div>
+    </div>
+
+    <div class="block">
+      <h3>2. 직장 & 사업 전략 – MBTI × 사주 기반 액션 플랜</h3>
+      <p>
+        • <span class="highlight">${trait.ei}</span> 기질 덕분에, 2026년에는 
+        “혼자 vs 함께”의 밸런스를 잘 맞추는 것이 관건입니다.  
+        E 성향이라면 <span class="highlight">월 1~2회 이상 네트워킹/미팅 데이</span>를 아예 달력에 고정으로 넣어 두고,  
+        I 성향이라면 <span class="highlight">주 1회 ‘혼자 정리 시간(2~3시간 블록)’</span>을 확보해 두는 것이 좋습니다.
+      </p>
+      <p>
+        • ${trait.ns} 덕분에, <span class="highlight">${trait.ns.includes("직관")?"트렌드 읽기와 새로운 포맷 실험":"데이터와 루틴을 기반으로 한 안정 성장"}</span>에 강점이 있습니다.  
+        N이면 분기마다 <span class="highlight">“새 포맷/콘텐츠/상품 테스트 주간”</span>을 잡고,  
+        S이면 매월 <span class="highlight">“정산·리뷰·개선 데이”</span>를 지정해 같은 패턴으로 반복해 보세요.
+      </p>
+      <p>
+        • ${trait.tf}의 영향으로, 의사결정은 
+        ${trait.tf.includes("논리")?"수익·효율·리스크 기준의 냉정한 판단":"사람·파트너십·브랜드 이미지 기준의 따뜻한 판단"}
+        이 섞여 있습니다.  
+        중요한 계약·투자·채용은 아래처럼 루틴을 만들어 두면 좋습니다.
+      </p>
+      <ul>
+        <li>① 숫자 체크 : 매출·마진·현금 흐름 기준으로 1차 필터</li>
+        <li>② 사람 체크 : 함께할 사람·파트너와의 케미, 신뢰도 체크</li>
+        <li>③ 마지막 잠깐 멈춤 : “지금 결정해도 1년 뒤에 후회 없을까?”를 스스로에게 한 번 물어보기</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>3. 돈 · 기회 · 리스크 관리 – “언제 무엇을 할지” 타임라인</h3>
+      <p>
+        오행상 <span class="highlight">${strongKo}</span>이 강하다는 것은, 
+        그 기운과 연결된 영역에서 <span class="highlight">매출과 기회가 터지기 쉬운 해</span>라는 뜻입니다.  
+        예를 들어 목(木)은 확장·신규 거래처, 화(火)는 마케팅·브랜딩, 
+        토(土)는 부동산·기반 구축, 금(金)은 계약·정산, 수(水)는 정보·네트워크와 연결됩니다.
+      </p>
+      <ul>
+        <li>1분기(1~3월) : 방향·브랜드·메인 상품을 결정하고, 불필요한 가지는 정리</li>
+        <li>2분기(4~6월) : 테스트 → 숫자로 검증 → 괜찮은 것에 자원 몰아주기</li>
+        <li>3분기(7~9월) : 마케팅/홍보 집중, 콜라보·제휴 시도, 가격·구성 조정</li>
+        <li>4분기(10~12월) : 수익 실현·정리·세금 대비, 내년 확장 준비</li>
+      </ul>
+      <p>
+        반대로 <span class="highlight">${weakKo}</span>이 약한 부분은 
+        “내가 직접 다 하려고 하면 계속 새는 영역”이 될 수 있습니다.  
+        예를 들어,
+      </p>
+      <ul>
+        <li>약한 오행이 수(水)라면 : 법·계약·세무 쪽은 전문가에게 일찍 맡기기</li>
+        <li>약한 오행이 금(金)이라면 : 가격 협상은 숫자에 강한 동료/파트너와 함께 진행</li>
+        <li>약한 오행이 화(火)라면 : 브랜딩·디자인·마케팅은 외주/전문가에게 투입</li>
+      </ul>
+      <p>
+        특히, <span class="highlight">“지금 아니면 안 된다”는 느낌이 강하게 드는 순간</span>에 하는 급한 투자는  
+        올해는 한 번 더 숨 고르고 검토하는 습관을 들이면, 2027년에 훨씬 여유 있는 선택을 할 수 있습니다.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>4. 2026년 실천 체크리스트 (현실적인 액션 플랜)</h3>
+      <p>
+        마지막으로, ${safeName}님의 사주·MBTI 조합을 기준으로 한 2026년 체크리스트입니다.
+      </p>
+      <ul>
+        <li>✔ 분기마다 “버릴 것 1개, 더 밀어붙일 것 1개”를 정리해서 실제로 스케줄에 반영하기</li>
+        <li>✔ ${trait.ei.includes("외향")?"월 2회 이상, 새로운 사람을 만나는 자리를 의도적으로 만들기":"월 2회 이상, 방해받지 않는 ‘혼자 정리 시간’ 확보하기"}</li>
+        <li>✔ 강한 오행과 연결된 업무·상품·고객군에 시간과 에너지를 60% 이상 배분하기</li>
+        <li>✔ 약한 오행 영역은 초반부터 파트너/직원/시스템과 나눠 맡기고 혼자 떠안지 않기</li>
+        <li>✔ 2026년을 “다음 3~5년을 준비하는 세팅의 해”라고 생각하고, 구조·브랜드·데이터를 남기기</li>
+      </ul>
+      <p style="margin-top:6px;">
+        이 리포트는 <span class="highlight">운(流) + 성향 + 전략</span>을 동시에 보는 K-스타일 가이드입니다.  
+        완벽히 맞아떨어지지 않더라도, “어디에 힘을 더 줄지, 어디를 내려놓을지” 방향을 잡는 나침반으로 가볍게 참고해 주세요.
+      </p>
+    </div>
+    `;
+  }
+  else if(lang==="ja"){
+    html+=`
+    <div class="block">
+      <h3>1. 2026年 全体の流れ</h3>
+      <p>
+        ${safeName}さんは <span class="highlight">${dayGan}日干</span> と 
+        <span class="highlight">${mbti}</span> タイプが重なった性質を持っています。  
+        つまり、${trait.ei}／${trait.ns}／${trait.tf}／${trait.jp} という軸で物事を見て動く人です。
+      </p>
+      <p>
+        2026年 丙午年は、火のエネルギーが強く立ち上がる年です。  
+        スピード感・ブランド力・決断力が問われる一年であり、五行では
+        <span class="highlight">最も強い要素が ${strongKo}、弱い要素が ${weakKo}</span> となっています。
+      </p>
+      <p>
+        おおまかに言えば、<span class="highlight">上半期は「準備と仕込み」、下半期は「勝負どころ」</span>と考えると動きやすくなります。
+      </p>
+    </div>
+    <div class="block">
+      <h3>2. キャリア・ビジネス戦略</h3>
+      <p>
+        ${trait.ei} という軸から、2026年は
+        「一人で考える時間」と「人前に出る時間」のバランスを意識することが大切です。  
+        Eならプレゼン・営業・人脈づくり、Iなら企画・資料作成・仕組みづくりに集中すると成果が出やすくなります。
+      </p>
+      <p>
+        ${trait.ns} という性質のおかげで、  
+        Nタイプなら新カテゴリー・新市場へのチャレンジ、Sタイプなら既存ビジネスの安定化と改善が得意分野です。
+      </p>
+      <ul>
+        <li>会議は短く・回数多め（60分1回より20分3回）</li>
+        <li>強い五行に関わる仕事へ時間を優先配分する</li>
+        <li>弱い五行は、パートナーや専門家に任せる仕組みを早めに整える</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>3. お金・チャンス・リスク管理</h3>
+      <p>
+        ${strongKo} が強いということは、その要素に関わる領域で売上やチャンスが生まれやすいという意味です。  
+        逆に ${weakKo} が弱い部分は、自分一人で抱え込むと疲れやすいので、外注やツールの活用を前提に設計しておくと安心です。
+      </p>
+    </div>
+    <div class="block">
+      <h3>4. 2026年 行動チェックリスト</h3>
+      <ul>
+        <li>✔ 四半期ごとに「やめること」と「もっと力を入れること」を1つずつ決める</li>
+        <li>✔ ${trait.ei.includes("外向")?"月2回以上は新しい人との出会いの場を作る":"月2回以上は一人で落ち着いて考える時間を確保する"}</li>
+        <li>✔ 強い五行とつながる仕事・案件に6割以上の時間を投資する</li>
+        <li>✔ 弱い五行は、最初から人・仕組み・外部サービスに任せる設計にする</li>
+      </ul>
+    </div>`;
+  }
+  else if(lang==="th"){
+    html+=`
+    <div class="block">
+      <h3>1. ภาพรวมปี 2026</h3>
+      <p>
+        คุณ${safeName} มีแกนดวงเป็น <span class="highlight">${dayGan}</span> และมีบุคลิกภาพแบบ 
+        <span class="highlight">${mbti}</span>  
+        รวมกันออกมาเป็นคนสไตล์ ${trait.ei} / ${trait.ns} / ${trait.tf} / ${trait.jp}
+      </p>
+      <p>
+        ปี 2026 (丙午) เป็นปีที่พลังไฟเด่น เรื่องความเร็ว แรงเหวี่ยง และภาพลักษณ์จึงสำคัญมาก  
+        ธาตุที่เด่นที่สุดคือ <span class="highlight">${strongKo}</span> และที่อ่อนที่สุดคือ 
+        <span class="highlight">${weakKo}</span> ซึ่งบอกเราว่าควร “เร่ง” ตรงไหน และ “จ้าง/ให้คนช่วย” ตรงไหน
+      </p>
+    </div>
+    <div class="block">
+      <h3>2. งานประจำและธุรกิจ – กลยุทธ์จาก MBTI × ซาจู</h3>
+      <p>
+        จาก ${trait.ei} ถ้าเป็น E ควรออกหน้าในเรื่องลูกค้า การพรีเซนต์ และการคุยดีล  
+        ถ้าเป็น I ควรโฟกัสงานวางระบบ เขียนแผน ทำเอกสาร คิดคอนเซปต์อยู่หลังบ้าน
+      </p>
+      <p>
+        ${trait.ns} ทำให้คุณเด่นทั้งด้าน 
+        ${trait.ns.includes("ไอเดีย")?"การมองภาพใหญ่และไอเดียใหม่ ๆ":"การจัดการงาน routine และรายละเอียดเล็ก ๆ"}  
+        ใช้จุดนี้เป็นจุดขายหลักในที่ทำงานหรือกับลูกค้า
+      </p>
+    </div>
+    <div class="block">
+      <h3>3. เงิน โอกาส และความเสี่ยง</h3>
+      <p>
+        ธาตุเด่น <span class="highlight">${strongKo}</span> คือพื้นที่ที่ “ดันแล้วขึ้น” เช่น ลูกค้าใหม่ โปรเจกต์ใหม่ หรือการสร้างแบรนด์  
+        ส่วนธาตุอ่อน <span class="highlight">${weakKo}</span> คือจุดที่มักจะเหนื่อยหรือมีรูรั่ว ควรปิดด้วยทีม ระบบ หรือผู้เชี่ยวชาญ
+      </p>
+    </div>
+    <div class="block">
+      <h3>4. เช็กลิสต์ลงมือทำปี 2026</h3>
+      <ul>
+        <li>✔ ทุกไตรมาส เขียน 1 อย่างที่จะหยุดทำ และ 1 อย่างที่จะเร่งทำ</li>
+        <li>✔ ${trait.ei.includes("ออกนอกบ้าน")?"อย่างน้อยเดือนละ 2 ครั้ง ออกไปพบคนใหม่ ๆ":"อย่างน้อยเดือนละ 2 ครั้ง ปิดโหมดอยู่กับตัวเองเพื่อคิดและวางแผน"}</li>
+        <li>✔ ลงเวลาอย่างน้อย 60% กับงานที่สอดคล้องกับธาตุเด่น</li>
+        <li>✔ ธาตุอ่อนให้คิดว่าจะใช้คน เครื่องมือ หรือระบบอะไรช่วยแทนตัวเอง</li>
+      </ul>
+    </div>`;
+  }
+  else if(lang==="id"){
+    html+=`
+    <div class="block">
+      <h3>1. Gambaran umum tahun 2026</h3>
+      <p>
+        ${safeName} memiliki batang hari <span class="highlight">${dayGan}</span> dan tipe kepribadian 
+        <span class="highlight">${mbti}</span>.  
+        Artinya Anda bergerak dengan pola ${trait.ei}, ${trait.ns}, ${trait.tf}, dan ${trait.jp}.
+      </p>
+      <p>
+        Tahun 2026 (丙午) penuh dengan energi api: cepat, agresif, dan penuh branding.  
+        Unsur terkuat Anda adalah <span class="highlight">${strongKo}</span> dan yang terlemah adalah 
+        <span class="highlight">${weakKo}</span>, yang menjadi petunjuk di mana harus gas dan di mana harus hati-hati.
+      </p>
+    </div>
+    <div class="block">
+      <h3>2. Strategi karier & bisnis</h3>
+      <p>
+        Dari sisi ${trait.ei},  
+        jika Anda tipe E, perbanyak peran di depan: presentasi, negosiasi, dan networking.  
+        Jika I, fokuslah pada riset, perencanaan, dokumen, dan desain sistem kerja.
+      </p>
+      <p>
+        ${trait.ns} membuat Anda kuat di 
+        ${trait.ns.includes("ide")?"ide baru, tren, dan visi jangka panjang":"detail, SOP, dan eksekusi harian yang rapi"}.  
+        Jadikan ini sebagai value utama yang Anda tawarkan ke tim atau klien.
+      </p>
+    </div>
+    <div class="block">
+      <h3>3. Uang, peluang, dan risiko</h3>
+      <p>
+        Unsur kuat <span class="highlight">${strongKo}</span> adalah area di mana peluang dan omzet mudah naik.  
+        Unsur lemah <span class="highlight">${weakKo}</span> sebaiknya sejak awal di-backup dengan tim, tools, atau vendor.
+      </p>
+    </div>
+    <div class="block">
+      <h3>4. Checklist aksi 2026</h3>
+      <ul>
+        <li>✔ Tiap kuartal pilih 1 hal yang dihentikan dan 1 hal yang digas terus</li>
+        <li>✔ ${trait.ei.includes("Ekstrovert")?"Minimal 2 kali sebulan hadir di event atau pertemuan baru":"Minimal 2 kali sebulan sediakan waktu khusus untuk refleksi dan perencanaan"} </li>
+        <li>✔ Salurkan ≥60% energi ke pekerjaan yang selaras dengan unsur kuat</li>
+        <li>✔ Gunakan orang/sistem untuk menutup area unsur lemah agar tidak bocor</li>
+      </ul>
+    </div>`;
+  }
+
+  document.getElementById("reportBlocks").innerHTML=html;
+}
+
+// 🔮 랜덤 Creative 모드용 텍스트 생성 (완전 무료/프론트 전용)
+function getPseudoCreativeText(payload){
+  const {lang,name,mbti,dayGan,dayElem,score} = payload;
+  const sorted=Object.entries(score).sort((a,b)=>b[1]-a[1]);
+  const strong=sorted[0][0];
+  const weak=sorted[sorted.length-1][0];
+  const safeName=name || (lang==="ja"?"あなた":lang==="th"?"คุณ":lang==="id"?"Anda":"당신");
+
+  if(lang!=="ko"){
+    // 다른 언어는 일단 짧은 버전
+    return `${safeName}님을 위한 보너스 리딩은 현재 한국어 버전이 가장 풍부합니다. 
+언어 설정을 Korean으로 바꾸면 더 자세한 Creative 리딩을 볼 수 있습니다.`;
+  }
+
+  // 한국어용 랜덤 조합
+  const strongMap = {
+    목:"사람·조직·확장에 강한 해입니다. 협업 제안, 새 파트너 발굴, 신규 거래처 오픈 같은 ‘판을 넓히는 일’은 웬만하면 해 보는 쪽이 유리합니다.",
+    화:"브랜딩·마케팅·노출 운이 강합니다. 얼굴과 이름을 드러내는 활동, 콘텐츠 업로드, 강연·세미나는 생각보다 큰 파급력을 낼 수 있습니다.",
+    토:"신뢰·안정·꾸준함이 무기인 해입니다. 단기 한 방보다, 매달 꾸준히 쌓이는 구독·단골·반복 매출 구조를 만드는 데 집중해 보세요.",
+    금:"계약·협상·정리의 운이 강합니다. 그동안 애매하게 끌어오던 계약, 미수금, 지분 구조를 올해 안에 한 번 정리해 두면 좋습니다.",
+    수:"정보·네트워크·배움의 운이 강합니다. 강의·컨퍼런스·스터디에 투자한 시간과 돈이 1~2년 뒤에 크게 돌아올 가능성이 큽니다."
+  };
+
+  const weakMap = {
+    목:"사람을 너무 많이 끌어들이면 오히려 관리가 안 될 수 있습니다. 올해는 ‘사람 수’보다 ‘핵심 멤버 1~2명’에 집중해 보세요.",
+    화:"감정이 앞설 때 바로 메시지를 보내거나 SNS에 글을 올리는 건 피하는 게 좋습니다. 최소 10분만이라도 미리 써 놓고 다시 읽어본 뒤에 보내세요.",
+    토:"책임감을 너무 많이 떠안으면 지치기 쉽습니다. ‘내가 아니어도 되는 일’ 리스트를 만들어 차근차근 내려놓는 연습이 필요합니다.",
+    금:"너무 디테일에 매달리면 결정이 밀릴 수 있습니다. 100점을 기다리기보다, 80점에서 한 번 실행해 보고 수정하는 흐름을 만들어 보세요.",
+    수:"정보 수집만 하다가 타이밍을 놓치기 쉽습니다. 조사 시간을 정해두고, 알게 된 것 중 1~2개만 골라 바로 실행해 보는 습관이 도움이 됩니다."
+  };
+
+  const ei = mbti[0];
+  const ns = mbti[1];
+  const tf = mbti[2];
+  const jp = mbti[3];
+
+  const eiLines = {
+    E:[
+      "이번 해에는 ‘내가 찾아가야 열리는 자리’가 많습니다. 월 1회 이상, 일부러 불편한 모임이나 새로운 그룹에 들어가 보는 것을 추천합니다.",
+      "대신 기운이 떨어지는 사람·모임에는 예의 있게 거리를 두어도 괜찮습니다. 숫자보다 질에 집중하는 게 포인트입니다."
+    ],
+    I:[
+      "혼자 정리하는 시간이 곧 돈이 되는 해입니다. 주 1회 2시간 정도는 완전히 방해받지 않는 ‘딥워크 시간’을 달력에 고정해 두세요.",
+      "사람을 만날 때는 ‘가볍지만 진짜 대화가 되는 소수 인원’을 추천합니다. 깊이 있는 대화 1번이 얕은 잡담 10번보다 큰 인사이트를 줍니다."
+    ]
+  };
+
+  const nsLines = {
+    N:[
+      "아이디어가 너무 많이 떠오를 수 있습니다. 전부 다 하려고 하지 말고, ‘3개월 안에 돈이 될 가능성이 있는 것’ 1~2개만 먼저 테스트하세요.",
+      "분기마다 ‘실험 주간’을 하나 정해서, 평소에 해보고 싶었던 포맷을 가볍게라도 실행해 보세요. 실패해도 이야기거리가 됩니다."
+    ],
+    S:[
+      "이미 하고 있는 일 중에서 ‘반응이 꾸준히 좋은 것’을 찾아, 체크리스트와 매뉴얼을 만들어 두면 좋습니다. 그게 곧 확장 가능한 자산이 됩니다.",
+      "급하게 새로운 판을 벌이기보다, 지금 판에서 누수가 나는 곳(원가, 동선, 재고, 응대)을 한 번씩만 점검해도 수익률이 꽤 달라질 수 있습니다."
+    ]
+  };
+
+  const tfLines = {
+    T:[
+      "중요한 결정을 할 때 숫자와 논리로 보는 건 큰 장점입니다. 다만, 상대의 감정 신호가 빨간불일 때는 ‘결정을 하루 미루는 것’만으로도 리스크를 많이 줄일 수 있습니다.",
+      "보고서와 숫자를 준비해 놓으면, 올해는 상사나 파트너를 설득해서 판을 키우기 좋은 타이밍이기도 합니다."
+    ],
+    F:[
+      "사람과 관계를 챙기는 힘 덕분에, 소개와 재방문, 입소문이 강하게 들어올 수 있는 해입니다. 대신 ‘내가 힘들어지는 부탁’에는 미리 기준선을 정해 두세요.",
+      "감정적으로 힘든 대화(거절, 가격 인상 통보 등)는 오전 10~12시처럼 컨디션이 상대적으로 괜찮을 때 잡는 것을 추천합니다."
+    ]
+  };
+
+  const jpLines = {
+    J:[
+      "계획을 세우면 그대로 밀어붙이는 힘이 좋습니다. 분기별·월별로 1~2개의 핵심 목표만 정리하고, 나머지는 과감히 ‘나중에’로 미뤄 두세요.",
+      "다만, 계획이 조금 틀어졌다고 해서 스스로를 너무 몰아붙이지는 마세요. 올해는 80%만 지켜도 잘한 해입니다."
+    ],
+    P:[
+      "변화에 유연하게 반응하는 장점이 크게 빛나는 해입니다. 단, 일정·돈과 관련된 부분은 최소한의 마감과 규칙을 정해 두는 게 좋습니다.",
+      "월 초에는 ‘이번 달에 꼭 끝낼 것 1~2개’를 메모해 두고, 나머지는 자유롭게 흘려보내도 괜찮습니다."
+    ]
+  };
+
+  const strongLine = strongMap[strong] || "강한 오행이 들어와서, 밀어붙였을 때 반응이 오는 영역이 분명히 있습니다. 그쪽으로 시간을 조금 더 써 보세요.";
+  const weakLine   = weakMap[weak]   || "약한 오행 쪽은 ‘완벽하게 하려고 하기’보다, 사람·도구·시스템을 먼저 떠올리는 게 좋습니다.";
+
+  const eiPicked = eiLines[ei] ? pickRandomN(eiLines[ei],2) : [];
+  const nsPicked = nsLines[ns] ? pickRandomN(nsLines[ns],1) : [];
+  const tfPicked = tfLines[tf] ? pickRandomN(tfLines[tf],1) : [];
+  const jpPicked = jpLines[jp] ? pickRandomN(jpLines[jp],1) : [];
+
+  const paragraphs = [];
+
+  paragraphs.push(
+    `① ${safeName}님의 올해 에너지를 한 줄로 요약하면,
+‘${dayGan}(${dayElem}) + ${mbti}’ 조합으로 움직이는 사람입니다. 
+쉽게 말해, 기본 성향은 그대로 두고 ‘환경과 타이밍’을 잘 골라 타는 것이 포인트입니다.`
+  );
+
+  paragraphs.push(
+    `② 오행 기준으로 보면, 강한 쪽은 ${strongLine}
+반대로 약한 쪽은 ${weakLine}`
+  );
+
+  paragraphs.push(
+    `③ 구체적으로 “언제 무엇을 하면 좋을지”를 정리하면 대략 이런 느낌입니다.
+
+- 1~3월 : 방향 정리, 불필요한 일 정리, 작은 테스트 시작
+- 4~6월 : 반응 좋은 것에 시간·돈·사람을 조금 더 몰아주기
+- 7~9월 : 마케팅·브랜딩·콜라보, 외부에 더 많이 노출되기
+- 10~12월 : 정산·구조 정리·세금·내년 준비에 포커스
+
+특히, 중요한 계약·결정은 ‘내 컨디션이 좋은 날 오전’에 잡는 것을 추천합니다. 
+밤늦게 피곤한 상태에서 결정하는 건 올해만큼은 피하는 게 좋습니다.`
+  );
+
+  paragraphs.push(
+    "④ 성향 별 현실적인 팁입니다.\n" +
+    (eiPicked.join("\n") || "") + "\n" +
+    (nsPicked.join("\n") || "") + "\n" +
+    (tfPicked.join("\n") || "") + "\n" +
+    (jpPicked.join("\n") || "")
+  );
+
+  paragraphs.push(
+    "⑤ 마지막으로, 이 리딩은 ‘정답’이라기보다 " +
+    "올해를 어떻게 설계하면 덜 후회할지를 함께 고민해 보는 참고용 지도입니다. " +
+    "마음에 와 닿는 문장 1~2개만 골라 실제 스케줄과 메모에 옮겨 적어 보시면 충분합니다."
+  );
+
+  return paragraphs.join("\n\n");
+}
+
+// Creative 블록 렌더
+function callPseudoCreative(payload){
+  const block=document.getElementById("aiCreativeBlock");
+  const text=getPseudoCreativeText(payload);
+  block.innerHTML = `
+    <div class="block">
+      <h3>AI Creative Mode – 보너스 리딩</h3>
+      <p style="white-space:pre-line;font-size:0.88rem;">${text}</p>
+    </div>
+  `;
+}
+
+// 분석 시작
+function startAnalysis(){
+  const t=TEXTS[currentLang]||TEXTS.ko;
+  const year=+document.getElementById("year").value;
+  const month=+document.getElementById("month").value;
+  const day=+document.getElementById("day").value;
+  const hourVal=document.getElementById("hour").value;
+  let name=document.getElementById("name").value.trim();
+  if(!name){
+    name=currentLang==="ja"?"あなた":currentLang==="th"?"คุณ":currentLang==="id"?"Anda":"당신";
+  }
+  const mbti=document.getElementById("mbti").value||"INTJ";
+
+  if(!year || !month || !day){
+    alert(t.alertMissingDate);
+    return;
+  }
+
+  document.getElementById("inputCard").style.display="none";
+  document.getElementById("loading").style.display="block";
+
+  setTimeout(()=>{
+    const h=hourVal===""?-1:+hourVal;
+    const saju=getSaju(year,month,day,h);
+    const score=calcScore(saju);
+
+    document.getElementById("loading").style.display="none";
+    document.getElementById("result").style.display="block";
+
+    const labelMap={
+      ko:["년주","월주","일주","시주"],
+      ja:["年柱","月柱","日柱","時柱"],
+      th:["เสาปี","เสาเดือน","เสาวัน","เสาเวลา"],
+      id:["Pilar Tahun","Pilar Bulan","Pilar Hari","Pilar Jam"]
+    };
+    const labels=labelMap[currentLang]||labelMap.ko;
+
+    const pillarsDiv=document.getElementById("pillars");
+    pillarsDiv.innerHTML="";
+    [saju.year,saju.month,saju.day,saju.hour].forEach((p,i)=>{
+      if(!p) return;
+      const el=document.createElement("div");
+      el.className="pillar";
+      el.innerHTML=`
+        <div class="pillar-label">${labels[i]}</div>
+        <div class="pillar-gan">${p.g}</div>
+        <div class="pillar-ji">${p.j}</div>
+        <div class="pillar-elem">${ELEM[p.g]} (${p.g}${p.j})</div>
+      `;
+      pillarsDiv.appendChild(el);
+    });
+
+    renderChart(score,currentLang);
+    renderSoulSphere(ELEM[saju.day.g],score);
+    renderElemDesc(score,currentLang);
+    renderDayMasterDesc(saju.day.g,ELEM[saju.day.g],currentLang);
+    render2026Report(name,saju.day.g,ELEM[saju.day.g],mbti,score,currentLang);
+
+    // 🔮 체크박스 ON일 때만 랜덤 Creative 보너스 리딩 실행
+    const useCreative = document.getElementById("aiCreative").checked;
+    if(useCreative){
+      callPseudoCreative({
+        lang: currentLang,
+        name,
+        mbti,
+        dayGan: saju.day.g,
+        dayElem: ELEM[saju.day.g],
+        score
+      });
+    }else{
+      document.getElementById("aiCreativeBlock").innerHTML = "";
+    }
+  },900);
+}
+
+// 초기 로드
+window.onload=()=>{
+  // 월/일 옵션
+  const mSel=document.getElementById("month");
+  const dSel=document.getElementById("day");
+  for(let i=1;i<=12;i++) mSel.innerHTML+=`<option value="${i}">${i}</option>`;
+  for(let i=1;i<=31;i++) dSel.innerHTML+=`<option value="${i}">${i}</option>`;
+
+  // MBTI 버튼
+  const grid=document.getElementById("mbtiGrid");
+  MBTI16.forEach(t=>{
+    const el=document.createElement("div");
+    el.className="mbti-opt";
+    el.innerText=t;
+    el.onclick=()=>{
+      document.querySelectorAll(".mbti-opt").forEach(x=>x.classList.remove("selected"));
+      el.classList.add("selected");
+      document.getElementById("mbti").value=t;
+    };
+    grid.appendChild(el);
+  });
+
+  // 언어 초기값 & 광고
+  const browserLang=detectBrowserLang();
+  if(["ko","ja","th","id"].includes(browserLang)){
+    currentLang=browserLang;
+    const langSel=document.getElementById("lang");
+    if(langSel) langSel.value=browserLang;
+  }
+  setLanguage(currentLang);
+  updateAdTexts();
+};
+</script>
+</body>
+</html>
