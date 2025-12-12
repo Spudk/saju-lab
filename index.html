@@ -15,6 +15,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
+
+<!-- 만세력 정확도 업그레이드 (절기/팔자 계산 라이브러리: lunar-javascript) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.6.10/lunar.min.js"></script>
 <style>
 :root{
   --k1:#ff9ff3;
@@ -129,7 +132,7 @@ body{
 
 /* Inputs */
 .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
-input,select{
+input,select,textarea{
   flex:1;
   padding:10px 12px;
   border-radius:16px;
@@ -145,6 +148,47 @@ input:focus,select:focus{
   box-shadow:0 0 0 1px rgba(168,85,247,.5);
 }
 label{font-size:.8rem;color:var(--muted);}
+
+textarea{min-height:84px;resize:vertical;}
+textarea::placeholder{color:#64748b;}
+
+.chip-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{
+  user-select:none;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:.74rem;
+  border:1px solid rgba(148,163,184,.55);
+  background:rgba(15,23,42,.85);
+  color:#e5e7eb;
+  cursor:pointer;
+  transition:.12s;
+}
+.chip:hover{transform:translateY(-1px);}
+.chip.selected{
+  border-color:#22d3ee;
+  background:radial-gradient(circle at 0 0,rgba(34,211,238,.22),rgba(15,23,42,.98));
+  box-shadow:0 0 0 1px rgba(34,211,238,.45);
+}
+.small-note{margin-top:6px;font-size:.72rem;color:rgba(148,163,184,.9);line-height:1.35;}
+
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.btn.secondary{
+  background:rgba(15,23,42,.9);
+  color:var(--txt);
+  border:1px solid rgba(148,163,184,.45);
+  box-shadow:none;
+}
+.btn.secondary:hover{box-shadow:0 14px 34px rgba(15,23,42,.45);}
+
+@media print{
+  body{background:#fff !important;color:#111827 !important;padding-bottom:0 !important;}
+  .header-wrap,.lang-select,.hero-tags,#inputCard,#loading,.btn-row .btn.secondary{display:none !important;}
+  .glass{box-shadow:none !important;border-color:#e5e7eb !important;background:#fff !important;}
+  .card{border-color:#e5e7eb !important;background:#fff !important;}
+  .ad-banner{border:1px solid #e5e7eb !important;background:#fff !important;color:#111827 !important;}
+  .ad-label{color:#111827 !important;}
+}
 
 /* Button */
 .btn{
@@ -237,6 +281,36 @@ label{font-size:.8rem;color:var(--muted);}
 }
 .tag i{font-size:.7rem;color:#f9a8d4;}
 
+
+.month-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+@media(max-width:720px){.month-grid{grid-template-columns:1fr;}}
+.month-card{
+  border-radius:16px;
+  padding:12px 12px;
+  border:1px solid rgba(148,163,184,.45);
+  background:rgba(2,6,23,.45);
+}
+.month-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.month-title{font-weight:700;font-size:.9rem;}
+.badge{
+  font-size:.68rem;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.5);
+  color:#e2e8f0;
+  background:rgba(15,23,42,.85);
+  white-space:nowrap;
+}
+.badge.go{border-color:rgba(34,211,238,.65);}
+.badge.caution{border-color:rgba(248,113,113,.6);}
+.badge.ok{border-color:rgba(148,163,184,.55);}
+.small-list{margin:0;padding-left:16px;font-size:.8rem;color:rgba(226,232,240,.85);}
+.small-list li{margin-bottom:3px;}
 .highlight{color:#fbbf24;font-weight:600;}
 
 #chartContainer{height:260px;}
@@ -314,7 +388,6 @@ label{font-size:.8rem;color:var(--muted);}
           <label for="lang">Language</label>
           <select id="lang" onchange="setLanguage(this.value)">
             <option value="ko">한국어</option>
-            <value="ja">日本語</value>
             <option value="ja">日本語</option>
             <option value="th">ไทย</option>
             <option value="id">Bahasa Indonesia</option>
@@ -357,6 +430,47 @@ label{font-size:.8rem;color:var(--muted);}
     <div class="row">
       <input type="text" id="name" placeholder="성함 (예: 김철수) - 이름 풀이 포함">
     </div>
+
+
+    <!-- 2026 구체화 입력 (선택) -->
+    <div style="margin-top:14px;padding:14px 12px;border-radius:18px;border:1px dashed rgba(148,163,184,.35);background:rgba(15,23,42,.55);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <i class="fa-solid fa-sliders" style="color:#22d3ee;"></i>
+        <div style="font-weight:700;font-size:.9rem;" id="extraTitle">2026 추가 데이터 (선택) — 더 구체한 조언용</div>
+      </div>
+
+      <div class="row">
+        <select id="role2026">
+          <option value="biz" selected>사업/대표</option>
+          <option value="job">직장/팀장</option>
+          <option value="switch">이직/전환</option>
+          <option value="start">창업 준비</option>
+        </select>
+        <select id="focus2026">
+          <option value="growth" selected>확장(스케일업)</option>
+          <option value="setup">기초/정비(시스템)</option>
+          <option value="cleanup">정리/리스크 관리</option>
+        </select>
+      </div>
+
+      <label id="goalLabel">2026 핵심 목표 (복수 선택)</label>
+      <div class="chip-grid" id="goalChips"></div>
+      <input type="hidden" id="goals" value="">
+
+      <div class="row" style="margin-top:10px;">
+        <div style="flex:1;">
+          <label id="riskLabelTitle">리스크 성향</label>
+          <input type="range" id="risk" min="0" max="100" value="50">
+          <div class="small-note" id="riskLabel">중립: 공격도, 방어도 아닌 ‘균형형’</div>
+        </div>
+      </div>
+
+      <label id="worryLabel" style="margin-top:10px;display:block;">지금 가장 큰 고민 (한 줄)</label>
+      <textarea id="worry" placeholder="예: 신규 거래처 확장 / 현금흐름 / 파트너십 / 건강 루틴"></textarea>
+
+      <div class="small-note" id="extraHint">※ 이 항목들은 ‘언제 무엇을 할지’ 타임라인을 더 현실적으로 만드는 데만 사용돼요.</div>
+    </div>
+
 
     <label id="mbtiLabel">성향 16유형 (MBTI 기반)</label>
     <div class="mbti-grid" id="mbtiGrid"></div>
@@ -435,10 +549,17 @@ label{font-size:.8rem;color:var(--muted);}
       <div id="aiCreativeBlock"></div>
     </div>
 
-    <button class="btn" id="btnRetry" onclick="location.reload()" style="margin-top:14px;">
+    <div class="btn-row">
+    <button class="btn secondary" id="btnPrint" onclick="window.print()">
+      <i class="fa-solid fa-print"></i>
+      <span>리포트 프린트</span>
+    </button>
+
+    <button class="btn" id="btnRetry" onclick="location.reload()">
       <i class="fa-solid fa-rotate-left"></i>
       <span>다른 사람 다시 분석하기</span>
     </button>
+  </div>
   </div>
 
 </div>
@@ -449,6 +570,53 @@ const GAN = ["갑","을","병","정","무","기","경","신","임","계"];
 const JI  = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
 const ELEM = {갑:"목",을:"목",병:"화",정:"화",무:"토",기:"토",경:"금",신:"금",임:"수",계:"수"};
 const MBTI16 = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+
+
+const GOAL_OPTIONS = [
+  {key:"sales", ko:"매출/거래처", icon:"fa-chart-line"},
+  {key:"brand", ko:"브랜딩/마케팅", icon:"fa-bullhorn"},
+  {key:"product", ko:"상품/서비스", icon:"fa-cube"},
+  {key:"people", ko:"인재/조직", icon:"fa-people-group"},
+  {key:"money", ko:"투자/자산", icon:"fa-coins"},
+  {key:"system", ko:"시스템/자동화", icon:"fa-gears"},
+  {key:"health", ko:"건강/습관", icon:"fa-heart-pulse"},
+  {key:"study", ko:"학습/자격", icon:"fa-graduation-cap"}
+];
+
+function initGoalChips(){
+  const wrap=document.getElementById("goalChips");
+  if(!wrap) return;
+  wrap.innerHTML="";
+  const hidden=document.getElementById("goals");
+  let selected = new Set((hidden.value||"").split(",").filter(Boolean));
+
+  GOAL_OPTIONS.forEach(opt=>{
+    const chip=document.createElement("div");
+    chip.className="chip"+(selected.has(opt.key)?" selected":"");
+    chip.innerHTML = `<i class="fa-solid ${opt.icon}" style="margin-right:6px;opacity:.85;"></i>${opt.ko}`;
+    chip.onclick=()=>{
+      if(selected.has(opt.key)) selected.delete(opt.key); else selected.add(opt.key);
+      hidden.value = Array.from(selected).join(",");
+      chip.classList.toggle("selected");
+    };
+    wrap.appendChild(chip);
+  });
+}
+
+function setRiskLabel(){
+  const el=document.getElementById("risk");
+  const label=document.getElementById("riskLabel");
+  if(!el||!label) return;
+  const v=parseInt(el.value||"50",10);
+  let txt="중립: 공격도, 방어도 아닌 ‘균형형’";
+  if(v<=25) txt="보수형: 안전장치·현금흐름 우선, 큰 베팅은 늦게";
+  else if(v<=45) txt="신중형: 검증→확장 순서, 계약·리스크 관리 강점";
+  else if(v<=65) txt="균형형: 실험과 방어를 같이, 월별 체크가 핵심";
+  else if(v<=85) txt="공격형: 기회 포착 빠름(대신 오버페이스 주의)";
+  else txt="초공격형: ‘한 번에 크게’ 성향(레버리지·건강·관계 리스크 조심)";
+  label.textContent = txt;
+}
+
 
 let currentLang = 'ko';
 
@@ -495,6 +663,12 @@ const TEXTS = {
     sphereTitle:"나의 영혼 구체 (魂球)",
     chartTitle:"오행 밸런스 레이더 차트",
     reportTitle:"2026년 직장·사업 운세 전략 리포트",
+btnPrint:"리포트 프린트",
+    extraTitle:"2026 추가 데이터 (선택) — 더 구체한 조언용",
+    goalLabel:"2026 핵심 목표 (복수 선택)",
+    riskLabelTitle:"리스크 성향",
+    worryLabel:"지금 가장 큰 고민 (한 줄)",
+    extraHint:"※ 이 항목들은 ‘언제 무엇을 할지’ 타임라인을 더 현실적으로 만드는 데만 사용돼요.", 
     alertMissingDate:"출생 연·월·일을 모두 입력해주세요."
   },
   ja:{
@@ -514,6 +688,12 @@ const TEXTS = {
     sphereTitle:"魂のエナジーボール",
     chartTitle:"五行バランス・レーダーチャート",
     reportTitle:"2026年 ビジネス・キャリア運レポート",
+btnPrint:"レポートを印刷",
+    extraTitle:"2026 追加データ（任意）— より具体的なアドバイス用",
+    goalLabel:"2026 重点目標（複数選択）",
+    riskLabelTitle:"リスク傾向",
+    worryLabel:"今の最大の悩み（一言）",
+    extraHint:"※ これらは「いつ何をするか」のタイムライン精度を上げるためだけに使います。", 
     alertMissingDate:"生年月日（年・月・日）をすべて入力してください。"
   },
   th:{
@@ -533,6 +713,12 @@ const TEXTS = {
     sphereTitle:"ลูกแก้วพลังวิญญาณ",
     chartTitle:"เรดาร์สมดุลธาตุทั้งห้า",
     reportTitle:"รายงานดวงการงานและธุรกิจ ปี 2026",
+btnPrint:"พิมพ์รายงาน",
+    extraTitle:"ข้อมูลเพิ่มปี 2026 (ไม่บังคับ) — เพื่อคำแนะนำที่ชัดขึ้น",
+    goalLabel:"เป้าหมายหลักปี 2026 (เลือกได้หลายข้อ)",
+    riskLabelTitle:"สไตล์ความเสี่ยง",
+    worryLabel:"กังวลที่สุดตอนนี้ (หนึ่งบรรทัด)",
+    extraHint:"※ ใช้เพื่อทำไทม์ไลน์ ‘ทำอะไรเมื่อไหร่’ ให้สมจริงขึ้นเท่านั้น", 
     alertMissingDate:"กรุณากรอกวัน เดือน ปีเกิดให้ครบ"
   },
   id:{
@@ -552,6 +738,12 @@ const TEXTS = {
     sphereTitle:"Bola energi jiwa",
     chartTitle:"Radar keseimbangan lima unsur",
     reportTitle:"Laporan peruntungan karier & bisnis 2026",
+btnPrint:"Cetak laporan",
+    extraTitle:"Data tambahan 2026 (opsional) — untuk saran lebih spesifik",
+    goalLabel:"Target utama 2026 (boleh pilih banyak)",
+    riskLabelTitle:"Kecenderungan risiko",
+    worryLabel:"Kekhawatiran terbesar saat ini (1 kalimat)",
+    extraHint:"※ Hanya dipakai untuk membuat timeline ‘kapan melakukan apa’ lebih realistis.", 
     alertMissingDate:"Silakan isi tahun, bulan, dan tanggal lahir."
   }
 };
@@ -706,7 +898,19 @@ function setLanguage(lang){
   document.getElementById("pillarTitle").innerText=t.pillarTitle;
   document.getElementById("sphereTitle").innerText=t.sphereTitle;
   document.getElementById("chartTitle").innerText=t.chartTitle;
-  document.getElementById("reportTitle").innerText=t.reportTitle;
+  // extra inputs & print
+  const extraTitleEl=document.getElementById("extraTitle");
+  if(extraTitleEl) extraTitleEl.innerText = t.extraTitle || "2026 추가 데이터 (선택) — 더 구체한 조언용";
+  const goalLabelEl=document.getElementById("goalLabel");
+  if(goalLabelEl) goalLabelEl.innerText = t.goalLabel || "2026 핵심 목표 (복수 선택)";
+  const riskLabelTitleEl=document.getElementById("riskLabelTitle");
+  if(riskLabelTitleEl) riskLabelTitleEl.innerText = t.riskLabelTitle || "리스크 성향";
+  const worryLabelEl=document.getElementById("worryLabel");
+  if(worryLabelEl) worryLabelEl.innerText = t.worryLabel || "지금 가장 큰 고민 (한 줄)";
+  const extraHintEl=document.getElementById("extraHint");
+  if(extraHintEl) extraHintEl.innerText = t.extraHint || "※ 이 항목들은 타임라인을 더 현실적으로 만드는 데만 사용돼요.";
+  const btnPrintEl=document.getElementById("btnPrint");
+  if(btnPrintEl) btnPrintEl.innerHTML = `<i class="fa-solid fa-print"></i><span>${t.btnPrint||"Print"}</span>`;
 
   buildHourOptions(lang);
   updateAdTexts();
@@ -714,38 +918,106 @@ function setLanguage(lang){
 
 // 사주 계산
 function getSaju(y,m,d,h=-1){
-  let yG=(y-3)%10; if(yG<0)yG+=10;
-  let yJ=(y-3)%12; if(yJ<0)yJ+=12;
+  // 1) Prefer high-accuracy library (절기/팔자) if available
+  try{
+    if(typeof Solar !== "undefined" && Solar && typeof Solar.fromYmd === "function"){
+      const solar = (h>=0 && typeof Solar.fromYmdHms === "function")
+        ? Solar.fromYmdHms(y,m,d,h,0,0)
+        : Solar.fromYmd(y,m,d);
 
+      const lunar = solar.getLunar();
+      const ec = (lunar && typeof lunar.getEightChar === "function") ? lunar.getEightChar() : null;
+
+      if(ec){
+        const yearP = {g: ec.getYearGan(),  j: ec.getYearZhi()};
+        const monthP= {g: ec.getMonthGan(), j: ec.getMonthZhi()};
+        const dayP  = {g: ec.getDayGan(),   j: ec.getDayZhi()};
+        const hourP = (h>=0 && typeof ec.getTimeGan === "function")
+          ? {g: ec.getTimeGan(), j: ec.getTimeZhi()}
+          : null;
+
+        // 안전장치(가끔 간지가 한글/한자 혼용일 수 있음)
+        if(ELEM[yearP.g] && ELEM[monthP.g] && ELEM[dayP.g]){
+          return {year:yearP, month:monthP, day:dayP, hour:hourP};
+        }
+      }
+    }
+  }catch(e){
+    // fallback below
+  }
+
+  // 2) Fallback (단순 계산): 연/월/시는 최대한 정교화, 일주는 근사
+  // - 연주: 입춘(대략 2/4) 기준 보정
   const isLeap=(y%4===0 && (y%100!==0||y%400===0));
   const daysToMonth=[0,31,59,90,120,151,181,212,243,273,304,334];
   let dayOfYear=daysToMonth[m-1]+d+(m>2 && isLeap?1:0);
-  const lichunApprox=35; // 대략 입춘
 
-  let realM;
-  if(m===1 || (m===2 && dayOfYear<lichunApprox)){
-    realM=m+11;
-    yG=(yG-1+10)%10;
-    yJ=(yJ-1+12)%12;
-  }else realM=m-1;
+  const lichunApprox=35; // 대략 입춘(2/4=35일차)
+  let yAdj=y;
+  if(m===1 || (m===2 && dayOfYear<lichunApprox)) yAdj=y-1;
 
-  let mG=(yG*2+realM+10)%10;
-  let mJ=(realM+1)%12;
+  let yG=(yAdj-4)%10; if(yG<0)yG+=10;
+  let yJ=(yAdj-4)%12; if(yJ<0)yJ+=12;
 
+  // - 월지: 절기 기준 (대략) 2월=寅 시작
+  const monthBranchIndex = (() => {
+    if(m===2 && dayOfYear>=lichunApprox) return 2; // 寅
+    if(m===2 && dayOfYear<lichunApprox) return 1;  // 丑
+    if(m===3) return 3;
+    if(m===4) return 4;
+    if(m===5) return 5;
+    if(m===6) return 6;
+    if(m===7) return 7;
+    if(m===8) return 8;
+    if(m===9) return 9;
+    if(m===10) return 10;
+    if(m===11) return 11;
+    if(m===12) return 0; // 子
+    return 1; // 1월=丑
+  })();
+
+  // - 월간: 연간에 따라 寅월 시작 간이 규칙
+  const startStemForY = (() => {
+    const idx = yG;
+    if(idx===0 || idx===5) return 2; // 甲/己 -> 丙寅
+    if(idx===1 || idx===6) return 4; // 乙/庚 -> 戊寅
+    if(idx===2 || idx===7) return 6; // 丙/辛 -> 庚寅
+    if(idx===3 || idx===8) return 8; // 丁/壬 -> 壬寅
+    return 0; // 戊/癸 -> 甲寅
+  })();
+  const offsetFromYin = (monthBranchIndex - 2 + 12) % 12;
+  const mG = (startStemForY + offsetFromYin) % 10;
+  const mJ = monthBranchIndex;
+
+  // - 일주(근사): 1900-01-31 기준(내부 기준일) 사용
   const base1900=new Date(1900,0,31);
   const target=new Date(y,m-1,d);
   let days=Math.floor((target-base1900)/86400000);
   let dG=days%10; let dJ=days%12;
   if(dG<0)dG+=10; if(dJ<0)dJ+=12;
 
-  let hG=-1,hJ=h;
-  if(h>=0) hG=(dG*2+h)%10;
+  // - 시지: 입력 선택(자~해), 시간 미입력 시 null
+  let hourP=null;
+  if(h>=0){
+    const hJ=h;
+    // 시각의 천간은 일간에 따라 子시 시작 간이 규칙
+    const startStemForD = (() => {
+      const idx=dG;
+      if(idx===0 || idx===5) return 0; // 甲/己 -> 甲子
+      if(idx===1 || idx===6) return 2; // 乙/庚 -> 丙子
+      if(idx===2 || idx===7) return 4; // 丙/辛 -> 戊子
+      if(idx===3 || idx===8) return 6; // 丁/壬 -> 庚子
+      return 8; // 戊/癸 -> 壬子
+    })();
+    const hG=(startStemForD + hJ) % 10;
+    hourP={g:GAN[hG],j:JI[hJ]};
+  }
 
   return {
     year:{g:GAN[yG],j:JI[yJ]},
     month:{g:GAN[mG],j:JI[mJ]},
     day:{g:GAN[dG],j:JI[dJ]},
-    hour:h>=0?{g:GAN[hG],j:JI[hJ]}:null
+    hour:hourP
   };
 }
 
@@ -942,7 +1214,108 @@ function getMbtiTraits(mbti,lang){
 }
 
 // 2026 리포트 생성 (기본 버전 – 구체적 조언 강화)
-function render2026Report(name,dayGan,dayElem,mbti,score,lang){
+
+// ================== 2026 구체 리딩용 추가 데이터/로직 ==================
+function escapeHTML(str){
+  return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+                 .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+const MBTI_WEAK_KO = {
+  INTJ:{weak:["계획이 완벽해야 시작(착수 지연)","표현이 차가워 보일 수 있음","혼자 떠안고 번아웃"], fix:["‘초안 60%’에서 바로 실행","주 1회 관계/감사 표현 루틴","업무를 ‘사람/시스템’으로 분해"]},
+  INTP:{weak:["아이디어가 많아 마무리가 약함","현실 일정/예산 누락","관계 피로로 잠수"], fix:["‘이번 달 1개만’ 원칙","예산/일정 체크리스트 고정","소통은 짧고 자주(10분)"]},
+  ENTJ:{weak:["속도가 빨라 주변이 따라오기 힘듦","밀어붙이다 관계 마찰","과도한 레버리지"], fix:["결정 전에 ‘이해 확인’ 1분","권한 위임+피드백 주기","큰 베팅은 2단계(테스트→확장)"]},
+  ENTP:{weak:["새로움에 끌려 집중 분산","논쟁으로 피로 누적","디테일/정산 누락"], fix:["스프린트(2주)로 쪼개기","논쟁 대신 ‘실험’으로 판정","정산/계약은 파트너와 2중 체크"]},
+  INFJ:{weak:["과도한 의미부여로 부담","상대 기분을 떠안음","결단을 미룸"], fix:["결정 기준을 ‘3개’로 제한","경계선(가능/불가) 문장 연습","마감일을 공개 약속"]},
+  INFP:{weak:["감정 기복으로 실행 흔들림","갈등 회피로 문제 장기화","완벽주의로 포기"], fix:["감정이 아니라 ‘시간’으로 실행","문제는 작게 쪼개서 대화","완벽 대신 ‘지속’"]},
+  ENFJ:{weak:["사람 챙기다 본업 희생","좋은 사람 콤플렉스","거절을 못함"], fix:["본업 KPI 1개를 최우선","도움은 ‘범위/기간’ 지정","거절 문장 템플릿 준비"]},
+  ENFP:{weak:["시작은 빠르나 루틴 약함","감정 따라 우선순위 변경","계약/정산 놓침"], fix:["주 2회 고정 루틴(월/목)","우선순위는 2주 단위 고정","돈·계약은 체크리스트"]},
+  ISTJ:{weak:["변화에 늦게 적응","유연성 부족으로 기회 놓침","혼자 책임 과다"], fix:["작은 실험을 ‘규칙’으로 만들기","50% 확률이면 소규모 테스트","업무 표준화+위임"]},
+  ISFJ:{weak:["남 챙기다 손해","불만 누적 후 폭발","새로운 시장 두려움"], fix:["조건/대가를 문서화","불편은 즉시 10%만 말하기","작은 확장(파일럿)부터"]},
+  ESTJ:{weak:["직설/통제로 갈등","속도·성과만 보고 사람 놓침","건강을 ‘나중에’"], fix:["‘왜’보다 ‘어떻게’ 질문","칭찬/인정 비율 늘리기","운동·수면을 KPI화"]},
+  ESFJ:{weak:["평판/관계에 과민","거절하면 불안","결정에 흔들림"], fix:["결정은 ‘원칙’으로","거절은 예의+대안 제시","핵심 고객/팀만 집중"]},
+  ISTP:{weak:["관심 없는 일 미루기","말 적어 오해","리스크를 과소평가"], fix:["싫은 일은 ‘15분 스타트’","업데이트를 짧게 공유","리스크는 수치화(최악/최선)"]},
+  ISFP:{weak:["감정/분위기에 좌우","계획이 느슨","갈등 회피"], fix:["기분과 상관없이 ‘하루 1개’","달력에 먼저 박기","갈등은 ‘사실-요청’으로"]},
+  ESTP:{weak:["즉흥 베팅/과속","세부 계약/품질 놓침","자극에 중독"], fix:["큰 결정은 24시간 룰","체크리스트 후 실행","루틴(운동/수면)로 밸런스"]},
+  ESFP:{weak:["재미/사람에 에너지 과소비","지출 관리 약함","싫은 일 회피"], fix:["주 1회 ‘돈/정산 데이’","소비 상한선 설정","싫은 일은 팀/툴로 분담"]}
+};
+
+function koGoalLabel(key){
+  const m={sales:"매출/거래처",brand:"브랜딩/마케팅",product:"상품/서비스",people:"인재/조직",money:"투자/자산",system:"시스템/자동화",health:"건강/습관",study:"학습/자격"};
+  return m[key]||key;
+}
+
+function monthElem(month){
+  // 계절 흐름(대략): 1토 2목 3목 4토 5화 6화 7토 8금 9금 10토 11수 12수
+  return ({1:"토",2:"목",3:"목",4:"토",5:"화",6:"화",7:"토",8:"금",9:"금",10:"토",11:"수",12:"수"})[month] || "토";
+}
+
+function lifePhaseText(age, dayElem, maxElem, minElem){
+  const phase = age<=27 ? "초년" : age<=55 ? "중년" : "말년";
+  const core = {
+    초년:"기초 체력/기술/인맥을 쌓는 운. ‘길게 갈 구조’를 만들수록 후반이 편해짐.",
+    중년:"확장과 수익 실현의 운. ‘사람·시스템’이 실적을 좌우함.",
+    말년:"정리와 안정의 운. ‘브랜드/자산/관계’를 남기는 쪽이 유리함."
+  }[phase];
+
+  const elemTips = {
+    목:"새 판을 여는 힘. 대신 한꺼번에 벌리면 탈진.",
+    화:"브랜딩·인지도. 대신 감정/과속 주의.",
+    토:"기반·신뢰·부동산/저장. 대신 고집/과로 주의.",
+    금:"계약·정산·품질. 대신 냉정함/관계 마찰 주의.",
+    수:"정보·네트워크·유통. 대신 불안/우유부단 주의."
+  };
+
+  return {phase, core, strongTip:elemTips[maxElem], weakTip:elemTips[minElem], dayTip:elemTips[dayElem]};
+}
+
+function buildMonthAdvice(month, elem, maxElem, minElem, goals, mbti){
+  const badge = (elem===maxElem) ? "go" : (elem===minElem) ? "caution" : "ok";
+  const badgeText = (elem===maxElem) ? "GO(추진)" : (elem===minElem) ? "CAUTION(조심)" : "OK(안정)";
+  const g = new Set(goals||[]);
+  const actions = [];
+  const cautions = [];
+
+  // goal-driven actions
+  if(g.has("sales")) actions.push("신규 거래처/채널 3곳 이상 ‘미팅 고정’");
+  if(g.has("brand")) actions.push("콘텐츠·프로모션을 ‘캠페인’ 단위로 운영");
+  if(g.has("product")) actions.push("제품/서비스 1개 ‘개선 릴리즈’");
+  if(g.has("people")) actions.push("채용/파트너 1명 ‘테스트 협업’");
+  if(g.has("money")) actions.push("정산·원가·환율/마진 점검 + 자금 계획");
+  if(g.has("system")) actions.push("반복 업무 1개 자동화(폼/봇/시트)");
+  if(g.has("health")) actions.push("운동/수면 루틴 2주 실험");
+  if(g.has("study")) actions.push("업무에 바로 쓰는 ‘짧은 학습’(2~4시간)");
+
+  // element-season nuance
+  if(elem==="목") actions.unshift("새로운 제안/런칭을 ‘작게’ 시작");
+  if(elem==="화") actions.unshift("사람이 보는 곳에 나가기(홍보/세일즈)");
+  if(elem==="토") actions.unshift("원가·재고·프로세스 정리");
+  if(elem==="금") actions.unshift("계약/품질/정산 ‘문서화’");
+  if(elem==="수") actions.unshift("정보 수집/네트워크/출장을 배치");
+
+  // cautions by weak elem + mbti tendency
+  if(elem===minElem) cautions.push("약한 오행 달: ‘혼자 해결’ 금지(외주/전문가/툴)");
+  if(mbti.endsWith("P")) cautions.push("마감이 흐려지기 쉬움 → ‘날짜를 먼저 박기’");
+  if(mbti.endsWith("J")) cautions.push("고집/완벽주의 → ‘테스트 후 수정’ 허용");
+  if(mbti.includes("T")) cautions.push("소통이 딱딱해질 수 있음 → 한 번 더 부드럽게");
+  if(mbti.includes("F")) cautions.push("기분을 떠안기 쉬움 → 기준/경계선 설정");
+
+  // element-specific caution
+  if(elem==="화") cautions.push("과속·즉흥 베팅/감정 결정 주의");
+  if(elem==="수") cautions.push("불안/우유부단으로 타이밍 놓치지 않기");
+  if(elem==="금") cautions.push("계약 문구/정산 누락 주의");
+  if(elem==="토") cautions.push("과로·책임 과부하 주의");
+  if(elem==="목") cautions.push("가지치기 없는 확장 금지");
+
+  // keep concise
+  const actionList = actions.slice(0,3);
+  const cautionList = Array.from(new Set(cautions)).slice(0,3);
+
+  return {badge, badgeText, actionList, cautionList};
+}
+
+
+function render2026Report(name,dayGan,dayElem,mbti,score,lang,extra={}){
   const sorted=Object.entries(score).sort((a,b)=>b[1]-a[1]);
   const maxElem=sorted[0][0];
   const minElem=sorted[sorted.length-1][0];
@@ -970,9 +1343,101 @@ function render2026Report(name,dayGan,dayElem,mbti,score,lang){
       토:"과로와 책임 과부하가 오기 쉬운 11~12월에는 새로운 장기 약속이나 큰 고정비 증가는 조금 미루는 편이 안전합니다.",
       금:"상대가 정리되지 않은 상태에서 급하게 계약을 밀어붙이는 1~2월은 피하고, 문서 검토 시간을 충분히 두세요.",
       수:"멘탈이 예민해지기 쉬운 2~3월에는 관계 정리·해고·결별 같은 이슈는 최대한 부드럽게, 단계적으로 진행하는 것이 좋습니다."
-    }[minElem];
+    }
+    [minElem];
+
+    // ---- 2026 구체화(사용자 추가 데이터) ----
+    const age2026 = (extra && extra.birth && extra.birth.year) ? (2026 - extra.birth.year + 1) : null;
+    const life = lifePhaseText(age2026||35, dayElem, maxElem, minElem);
+    const mbtiWeak = MBTI_WEAK_KO[mbti] || {weak:[], fix:[]};
+    const goals = (extra && extra.goals) ? extra.goals : [];
+    const worry = (extra && extra.worry) ? extra.worry : "";
+    const role2026 = (extra && extra.role2026) ? extra.role2026 : "biz";
+    const focus2026 = (extra && extra.focus2026) ? extra.focus2026 : "growth";
+    const risk = (extra && typeof extra.risk === "number") ? extra.risk : 50;
+
+    const roleText = ({biz:"사업/대표",job:"직장/팀장",switch:"이직/전환",start:"창업 준비"})[role2026] || "사업/대표";
+    const focusText = ({growth:"확장(스케일업)",setup:"기초/정비(시스템)",cleanup:"정리/리스크 관리"})[focus2026] || "확장(스케일업)";
+    const goalsText = (goals && goals.length) ? goals.map(koGoalLabel).join(" · ") : "미선택(기본 리딩)";
+
+    // 월별 타임라인 HTML
+    const monthGrid = (()=>{
+      let s = `<div class="month-grid">`;
+      for(let mm=1; mm<=12; mm++){
+        const e = monthElem(mm);
+        const a = buildMonthAdvice(mm,e,maxElem,minElem,goals,mbti);
+        s += `
+          <div class="month-card">
+            <div class="month-head">
+              <div class="month-title">${mm}월 · ${e}의 달</div>
+              <div class="badge ${a.badge}">${a.badgeText}</div>
+            </div>
+            <ul class="small-list">
+              <li><b>추천:</b> ${a.actionList.join(" / ")}</li>
+              <li><b>조심:</b> ${a.cautionList.join(" / ")}</li>
+            </ul>
+          </div>`;
+      }
+      s += `</div>`;
+      return s;
+    })();
+
+    const contextBlock = `
+      <div class="block">
+        <h3>0. (추가 데이터 반영) 2026 상황 요약</h3>
+        <p>
+          역할: <span class="highlight">${roleText}</span> ·
+          포커스: <span class="highlight">${focusText}</span> ·
+          목표: <span class="highlight">${goalsText}</span>
+        </p>
+        ${worry?`<p>지금 고민: <span class="highlight">${escapeHTML(worry)}</span></p>`:""}
+        <p style="margin-top:6px;">※ 위 선택은 아래 ‘월별 타임라인’과 ‘조심 포인트’에 반영됩니다.</p>
+      </div>`;
+
+    const phaseBlock = `
+      <div class="block">
+        <h3>0. 초년 · 중년 · 말년 운 – 큰 흐름</h3>
+        <p>
+          ${age2026?`${safeName}님은 2026년 기준 <span class="highlight">${age2026}세(한국식)</span>로, 현재는 <span class="highlight">${life.phase}</span> 흐름에 더 가깝습니다.`:
+          `출생년도 입력이 없어, 현재 나이 구간은 ‘중년’ 기준으로 해석했습니다(정확도↑를 원하면 출생년도만 입력해 주세요).`}
+        </p>
+        <ul>
+          <li><b>초년(0~27)</b>: 기초 체력·기술·인맥을 쌓는 운. ‘빨리 많이’보다 <span class="highlight">한 가지를 깊게</span>가 유리.</li>
+          <li><b>중년(28~55)</b>: 확장·수익 실현의 운. <span class="highlight">사람·시스템·브랜드</span>가 성적표를 결정.</li>
+          <li><b>말년(56+)</b>: 정리·안정의 운. <span class="highlight">자산/브랜드/관계</span>를 남길수록 편해짐.</li>
+        </ul>
+        <p style="margin-top:6px;">
+          • 내 일간(${dayGan})의 기질: ${life.dayTip}<br>
+          • 강한 오행(${strongKo})을 쓰는 법: ${life.strongTip}<br>
+          • 약한 오행(${weakKo})을 막는 법: ${life.weakTip}
+        </p>
+      </div>`;
+
+    const weaknessBlock = `
+      <div class="block">
+        <h3>0. MBTI 약점 기반 리스크 – 2026년에 특히 조심할 것</h3>
+        <p>MBTI는 ‘성향’이라서 장점이 강할수록 반대쪽이 약점이 됩니다. 올해는 그 약점이 <span class="highlight">돈·관계·체력</span>에서 비용으로 튈 수 있어요.</p>
+        <ul>
+          ${(mbtiWeak.weak||[]).slice(0,3).map(x=>`<li><b>약점:</b> ${escapeHTML(x)}</li>`).join("")}
+          ${(mbtiWeak.fix||[]).slice(0,3).map(x=>`<li><b>보완:</b> ${escapeHTML(x)}</li>`).join("")}
+        </ul>
+      </div>`;
+
+    const monthBlock = `
+      <div class="block">
+        <h3>3.5 2026 월별 타임라인 – “언제 무엇을 할지”</h3>
+        <p style="margin-bottom:6px;">
+          월별 오행(계절 흐름)을 기준으로 ‘추진 달’과 ‘조심 달’을 표시했습니다.  
+          <span class="highlight">GO</span> 달엔 실행/영업/런칭을, <span class="highlight">CAUTION</span> 달엔 계약·정산·체력 관리로 밸런스를 잡아주세요.
+        </p>
+        ${monthGrid}
+      </div>`;
 
     html+=`
+    ${contextBlock}
+    ${phaseBlock}
+    ${weaknessBlock}
+
     <div class="block">
       <h3>1. 2026년 전체 흐름 – ${safeName}님의 K-스타일 운세 요약</h3>
       <p>
@@ -1050,6 +1515,8 @@ function render2026Report(name,dayGan,dayElem,mbti,score,lang){
         올해는 한 번 더 숨 고르고 검토하는 습관을 들이면, 2027년에 훨씬 여유 있는 선택을 할 수 있습니다.
       </p>
     </div>
+
+    ${monthBlock}
 
     <div class="block">
       <h3>4. 2026년 실천 체크리스트 (현실적인 액션 플랜)</h3>
@@ -1311,6 +1778,22 @@ function getPseudoCreativeText(payload){
 쉽게 말해, 기본 성향은 그대로 두고 ‘환경과 타이밍’을 잘 골라 타는 것이 포인트입니다.`
   );
 
+
+  // 추가 데이터가 있으면 더 현실적으로 (목표/고민/리스크성향)
+  const goals = (extra && Array.isArray(extra.goals)) ? extra.goals : [];
+  const goalsKo = goals.length ? goals.map(koGoalLabel).join(" · ") : "";
+  const worry = (extra && extra.worry) ? extra.worry : "";
+  const risk = (extra && typeof extra.risk==="number") ? extra.risk : 50;
+  const riskTone = (risk<=35) ? "보수적으로" : (risk>=70) ? "공격적으로" : "균형있게";
+
+  if(goalsKo || worry){
+    paragraphs.push(
+      `②(추가) ${safeName}님의 2026 목표는 ${goalsKo?goalsKo:"(미선택)"} 쪽으로 기운이 가 있고, `+
+      (worry?`지금 가장 큰 고민은 “${worry}”에 가까워 보여요. `:"")+
+      `올해는 ${riskTone} 움직이되, 결정은 ‘작게 테스트 → 크게 확장’ 순서가 가장 안전합니다.`
+    );
+  }
+
   paragraphs.push(
     `② 오행 기준으로 보면, 강한 쪽은 ${strongLine}
 반대로 약한 쪽은 ${weakLine}`
@@ -1370,6 +1853,15 @@ function startAnalysis(){
   }
   const mbti=document.getElementById("mbti").value||"INTJ";
 
+  const extra = {
+    birth:{year,month,day,hour:hourVal===""?-1:+hourVal},
+    role2026:(document.getElementById("role2026")?.value)||"biz",
+    focus2026:(document.getElementById("focus2026")?.value)||"growth",
+    goals:(document.getElementById("goals")?.value||"").split(",").filter(Boolean),
+    risk:parseInt((document.getElementById("risk")?.value||"50"),10),
+    worry:(document.getElementById("worry")?.value||"").trim()
+  };
+
   if(!year || !month || !day){
     alert(t.alertMissingDate);
     return;
@@ -1413,7 +1905,7 @@ function startAnalysis(){
     renderSoulSphere(ELEM[saju.day.g],score);
     renderElemDesc(score,currentLang);
     renderDayMasterDesc(saju.day.g,ELEM[saju.day.g],currentLang);
-    render2026Report(name,saju.day.g,ELEM[saju.day.g],mbti,score,currentLang);
+    render2026Report(name,saju.day.g,ELEM[saju.day.g],mbti,score,currentLang,extra);
 
     // 🔮 체크박스 ON일 때만 랜덤 Creative 보너스 리딩 실행
     const useCreative = document.getElementById("aiCreative").checked;
@@ -1424,7 +1916,8 @@ function startAnalysis(){
         mbti,
         dayGan: saju.day.g,
         dayElem: ELEM[saju.day.g],
-        score
+        score,
+        extra
       });
     }else{
       document.getElementById("aiCreativeBlock").innerHTML = "";
@@ -1453,6 +1946,13 @@ window.onload=()=>{
     };
     grid.appendChild(el);
   });
+
+
+  // 2026 목표 칩/리스크 라벨
+  initGoalChips();
+  setRiskLabel();
+  const riskEl=document.getElementById("risk");
+  if(riskEl) riskEl.addEventListener("input", setRiskLabel);
 
   // 언어 초기값 & 광고
   const browserLang=detectBrowserLang();
